@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Fragment testFragment = new TestFragment();
+        Fragment testFragment = new TodayEventsListFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment, testFragment);
         transaction.addToBackStack(null);
@@ -66,11 +66,12 @@ public class MainActivity extends AppCompatActivity
         {
             case R.id.nav_events_list:
             {
-               fragmentClass = TestFragment.class;
+               fragmentClass = TodayEventsListFragment.class;
                 break;
             }
             case R.id.nav_events_map:
             {
+                fragmentClass = TodayEventsMapFragment.class;
                 break;
             }
             case R.id.nav_interesting_events:
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             default:
-                fragmentClass = TestFragment.class;
+                fragmentClass = TodayEventsListFragment.class;
 
         }
         try

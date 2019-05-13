@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CustomAdapter extends ArrayAdapter<Event> implements View.OnClickListener
+public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClickListener
 {
 
     private ArrayList<Event> dataSet;
@@ -28,12 +28,11 @@ public class CustomAdapter extends ArrayAdapter<Event> implements View.OnClickLi
         TextView eventAddress;
     }
 
-    public CustomAdapter(ArrayList<Event> data, Context context)
+    public EventListAdapter(ArrayList<Event> data, Context context)
     {
         super(context, R.layout.row_item, data);
         this.dataSet = data;
         this.mContext = context;
-
     }
 
     @Override
@@ -43,7 +42,7 @@ public class CustomAdapter extends ArrayAdapter<Event> implements View.OnClickLi
         int position = (Integer) v.getTag();
         Object object = getItem(position);
         Event event = (Event) object;
-
+        Log.d("kot", "klik");
         Snackbar.make(v, "Release date ", Snackbar.LENGTH_LONG)
                 .setAction("No action", null).show();
     }

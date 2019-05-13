@@ -52,7 +52,7 @@ public class Event
 
     public String getName()
     {
-        return name.substring(21, name.length()-17);
+        return name; //.substring(21, name.length()-17);
     }
 
     public void setName(String name)
