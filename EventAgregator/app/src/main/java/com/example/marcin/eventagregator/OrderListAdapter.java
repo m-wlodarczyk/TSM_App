@@ -33,7 +33,7 @@ public class OrderListAdapter  { //extends ArrayAdapter<Order>
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(mResource, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.name = convertView.findViewById(R.id.name);
+            viewHolder.name = convertView.findViewById(R.id.event_name);
 
             viewHolder.name.setText("nazwa");
 

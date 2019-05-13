@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventList {
-    private List<Event> events;
+    private ArrayList<Event> events;
 
     public EventList(JSONArray eventsJSON) {
         try
@@ -34,7 +34,7 @@ public class EventList {
 
     }
 
-    public List<Event> getEvents() {
+    public ArrayList<Event> getEvents() {
         return this.events;
     }
 

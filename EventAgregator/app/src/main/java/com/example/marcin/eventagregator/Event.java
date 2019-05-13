@@ -5,17 +5,20 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Event {
+public class Event
+{
     private Integer id;
     private String name;
     private String description;
     private String address;
     private String date;
 
-    public Event() {
+    public Event()
+    {
     }
 
-    public Event(JSONObject eventJSON) {
+    public Event(JSONObject eventJSON)
+    {
         try
         {
             this.id = Integer.parseInt(eventJSON.get("event_id").toString());
@@ -31,55 +34,65 @@ public class Event {
                     .getJSONObject("event_address")
                     .getString("street");
             this.date = eventJSON.getString("event_start");
-        }
-        catch (JSONException e)
+        } catch (JSONException e)
         {
             Log.d("exception", e.getMessage());
         }
     }
 
-    public Integer getId() {
+    public Integer getId()
+    {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Integer id)
+    {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getName()
+    {
+        return name.substring(21, name.length()-17);
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description)
+    {
         this.description = description;
     }
 
-    public String getAddress() {
+    public String getAddress()
+    {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(String address)
+    {
         this.address = address;
     }
 
-    public String getDate() {
+    public String getDate()
+    {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(String date)
+    {
         this.date = date;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Event [ id: " + id + "; name: " + name + "; address: " + address + "; date: " + date + " ]";
     }
 }
