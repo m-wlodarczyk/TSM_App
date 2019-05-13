@@ -1,3 +1,4 @@
+package com.example.marcin.eventagregator;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
