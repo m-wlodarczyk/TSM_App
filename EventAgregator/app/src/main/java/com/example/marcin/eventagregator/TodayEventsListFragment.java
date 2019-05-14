@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +65,8 @@ public class TodayEventsListFragment extends Fragment
         view = inflater.inflate(R.layout.fragment_today_events_list, container, false);
         eventListView = view.findViewById(R.id.list);
         dateTextView = view.findViewById(R.id.date_textview);
+        Calendar calendar = Calendar.getInstance();
+        dateTextView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "." + (calendar.get(Calendar.MONTH)+1) + "." + calendar.get(Calendar.YEAR));
 
         // read xml from file
 //        final String fileName = "events.xml";
@@ -190,8 +193,18 @@ public class TodayEventsListFragment extends Fragment
                             {
                                 // TODO
                                 Event event = arrayListEvents.get(position);
-                                Snackbar.make(view, "hmmmm", Snackbar.LENGTH_LONG)
-                                        .setAction("No action", null).show();
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("event", event.toJSON());
+
+                                Fragment newFragment = new EventInfoFragment();
+                                newFragment.setArguments(bundle);
+                                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                transaction.replace(R.id.fragment, newFragment);
+                                transaction.addToBackStack(null);
+                                transaction.commit();
+
+
                             }
                         });
 

@@ -23,7 +23,7 @@ public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClic
     private static class ViewHolder
     {
         TextView eventName;
-        TextView eventDate;
+//        TextView eventDate;
         TextView eventAddress;
     }
 
@@ -64,7 +64,7 @@ public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClic
             convertView = inflater.inflate(R.layout.row_item, parent, false);
 
             viewHolder.eventName = convertView.findViewById(R.id.event_name);
-            viewHolder.eventDate = convertView.findViewById(R.id.event_date);
+//            viewHolder.eventDate = convertView.findViewById(R.id.event_date);
             viewHolder.eventAddress = convertView.findViewById(R.id.event_address);
             result = convertView;
 
@@ -80,7 +80,7 @@ public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClic
         lastPosition = position;
 
         viewHolder.eventName.setText(event.getName());
-        viewHolder.eventDate.setText(event.getDate());
+//        viewHolder.eventDate.setText(event.getDate());
         viewHolder.eventAddress.setText(event.getAddress());
         // Return the completed view to render on screen
         return convertView;

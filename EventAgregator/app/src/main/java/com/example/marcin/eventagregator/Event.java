@@ -2,6 +2,8 @@ package com.example.marcin.eventagregator;
 
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +32,12 @@ public class Event
                     .getJSONObject("event_version")
                     .getJSONObject("version")
                     .getString("evtml_desc");
+
+            this.description = this.getDescription().replaceAll("<[^>]*>", " ");
+            this.description = this.getDescription().replaceAll("&quot;", "\"");
+            this.description = this.getDescription().replaceAll("#[0-9]+|opr.sw", "");
+
+
             this.address = eventJSON
                     .getJSONObject("event_address")
                     .getString("street");
@@ -95,4 +103,38 @@ public class Event
     {
         return "Event [ id: " + id + "; name: " + name + "; address: " + address + "; date: " + date + " ]";
     }
+
+
+    public String toJSON()
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String eventJSON = null;
+        try
+        {
+            eventJSON = objectMapper.writeValueAsString(this);
+
+        }
+        catch (Exception e)
+        {
+            Log.d("exception", e.getMessage());
+        }
+        return eventJSON;
+    }
+
+    public static Event createFromJSON(String userJSON)
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Event event = null;
+        userJSON = userJSON.replaceAll(",\"date\":\\{[^}]*\\}", "");
+        try
+        {
+            event = objectMapper.readValue(userJSON, Event.class);
+        }
+        catch (Exception e)
+        {
+            Log.d("exception", e.getMessage());
+        }
+        return event;
+    }
 }
+
