@@ -1,5 +1,6 @@
 package com.example.marcin.eventagregator;
 
+import android.app.DatePickerDialog;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,6 +35,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
@@ -39,8 +44,10 @@ import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
 public class TodayEventsListFragment extends Fragment
 {
+    private static final String URL = "http://www.poznan.pl/mim/public/ws-information/";
     private View view;
     ListView eventListView;
+    private TextView dateTextView;
     private static EventListAdapter eventListAdapter;
 
     public static JSONObject convert(String xmlString)
@@ -56,6 +63,7 @@ public class TodayEventsListFragment extends Fragment
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.fragment_today_events_list, container, false);
         eventListView = view.findViewById(R.id.list);
+        dateTextView = view.findViewById(R.id.date_textview);
 
         // read xml from file
 //        final String fileName = "events.xml";
@@ -116,8 +124,41 @@ public class TodayEventsListFragment extends Fragment
 
         // read xml from website
         // Instantiate the RequestQueue.
+        updateEvents(URL + "?co=getCurrentDayEvents");
+
+        Button dateButton = view.findViewById(R.id.date_button);
+        dateButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Calendar calendar = Calendar.getInstance();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                String pickedDate = dayOfMonth + "." + (monthOfYear+1) + "." + year;
+                                dateTextView.setText(pickedDate);
+                                updateEvents(URL + "?co=getDayEvent&date=" + year + "-" + (monthOfYear+1) + "-" + dayOfMonth );
+
+
+                            }
+                        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+        });
+
+
+        return view;
+
+    }
+
+    private void updateEvents(String url)
+    {
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://www.poznan.pl/mim/public/ws-information/?co=getCurrentDayEvents";
+//        String url = "http://www.poznan.pl/mim/public/ws-information/?co=getCurrentDayEvents";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -126,8 +167,6 @@ public class TodayEventsListFragment extends Fragment
                     @Override
                     public void onResponse(String response)
                     {
-                        // Display the first 500 characters of the response string.
-                        Log.d("123", "Response is: " + response.length());
                         String xmlString = response.substring(response.indexOf("<root"), response.indexOf("</root>") + 7);
 
                         JSONObject obj = convert(xmlString);
@@ -140,10 +179,7 @@ public class TodayEventsListFragment extends Fragment
                         {
                             Log.d("exception", e.getMessage());
                         }
-                        for (int i = 0; i < 5; i++)
-                        {
-                            Log.d("koy", eventList.get(i).toString());
-                        }
+
                         final ArrayList<Event> arrayListEvents = eventList.getEvents();
                         eventListAdapter = new EventListAdapter(arrayListEvents, getContext());
                         eventListView.setAdapter(eventListAdapter);
@@ -152,9 +188,8 @@ public class TodayEventsListFragment extends Fragment
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                             {
-
+                                // TODO
                                 Event event = arrayListEvents.get(position);
-
                                 Snackbar.make(view, "hmmmm", Snackbar.LENGTH_LONG)
                                         .setAction("No action", null).show();
                             }
@@ -170,10 +205,8 @@ public class TodayEventsListFragment extends Fragment
                 Snackbar.make(view, error.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         });
+
         queue.add(stringRequest);
-
-
-        return view;
-
     }
+
 }

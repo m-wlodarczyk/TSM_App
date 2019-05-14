@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClickListener
 {
 
-    private ArrayList<Event> dataSet;
     Context mContext;
 
     // View lookup cache
@@ -31,7 +30,6 @@ public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClic
     public EventListAdapter(ArrayList<Event> data, Context context)
     {
         super(context, R.layout.row_item, data);
-        this.dataSet = data;
         this.mContext = context;
     }
 
