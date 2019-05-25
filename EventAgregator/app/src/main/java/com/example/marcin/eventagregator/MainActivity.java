@@ -1,5 +1,8 @@
 package com.example.marcin.eventagregator;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,12 +23,29 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
+    private static final String TAG = "NotificationJobService";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ComponentName componentName = new ComponentName(this, NotificationJobService.class);
+        JobInfo info = new JobInfo.Builder(123, componentName)
+                .setPeriodic(15 *60 * 1000)
+                .setPersisted(true)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .build();
+
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode = scheduler.schedule(info);
+
+        if (resultCode == JobScheduler.RESULT_SUCCESS)
+            Log.d(TAG, "Job scheduled");
+        else
+            Log.d(TAG, "Job failed");
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

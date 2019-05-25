@@ -1,5 +1,6 @@
 package com.example.marcin.eventagregator;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.res.AssetManager;
 import android.os.Environment;
@@ -136,7 +137,7 @@ public class TodayEventsListFragment extends Fragment
             public void onClick(View v)
             {
                 Calendar calendar = Calendar.getInstance();
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT,
                         new DatePickerDialog.OnDateSetListener() {
 
                             @Override
@@ -175,7 +176,7 @@ public class TodayEventsListFragment extends Fragment
                         JSONObject obj = convert(xmlString);
                         EventList eventList = null;
                         try
-                        {
+                        {   
                             eventList = new EventList(obj.getJSONObject("root").getJSONArray("event"));
 
                         } catch (JSONException e)
