@@ -1,8 +1,6 @@
 package com.example.marcin.eventagregator;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -15,8 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -91,19 +87,19 @@ public class TodayEventsMapFragment extends Fragment
                             {
 
                                 bounds = LatLngBounds.builder();
-                                titles = new ArrayList<>();
+                                names = new ArrayList<>();
 
                                 for (Event x : arrayListEvents)
                                 {
                                     if (findOnMap(x.getAddress()))
                                     {
-                                        titles.add(x.getName());
+                                        names.add(x.getTitle());
                                     }
                                 }
                                 progressDialog.dismiss();
 
                                 Fragment mapFragment = new MapFragment();
-                                ((MapFragment) mapFragment).setMarkers(markers, bounds, titles);
+                                ((MapFragment) mapFragment).setMarkers(markers, bounds, names);
                                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                                 transaction.replace(R.id.map, mapFragment);
                                 transaction.commit();
@@ -128,7 +124,7 @@ public class TodayEventsMapFragment extends Fragment
     }
 
     private LatLngBounds.Builder bounds;
-    private ArrayList<String> titles;
+    private ArrayList<String> names;
     private List<LatLng> markers = new ArrayList<>();
 
     public boolean findOnMap(String locationName)

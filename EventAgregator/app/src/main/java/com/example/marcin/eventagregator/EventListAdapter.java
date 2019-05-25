@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClic
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.row_item, parent, false);
 
-            viewHolder.eventName = convertView.findViewById(R.id.event_name);
+            viewHolder.eventName = convertView.findViewById(R.id.event_title);
 //            viewHolder.eventDate = convertView.findViewById(R.id.event_date);
             viewHolder.eventAddress = convertView.findViewById(R.id.event_address);
             result = convertView;
@@ -79,7 +78,7 @@ public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClic
         result.startAnimation(animation);
         lastPosition = position;
 
-        viewHolder.eventName.setText(event.getName());
+        viewHolder.eventName.setText(event.getTitle());
 //        viewHolder.eventDate.setText(event.getDate());
         viewHolder.eventAddress.setText(event.getAddress());
         // Return the completed view to render on screen

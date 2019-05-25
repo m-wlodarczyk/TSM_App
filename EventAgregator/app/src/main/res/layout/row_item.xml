@@ -15,11 +15,11 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/event_name"
+            android:id="@+id/event_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="event_name"
+            android:text="event_title"
             android:textStyle="bold"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/black" />

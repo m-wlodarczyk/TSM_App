@@ -10,13 +10,19 @@ import org.json.JSONObject;
 public class Event
 {
     private Integer id;
-    private String name;
+    private String title;
     private String description;
     private String address;
     private String date;
 
-    public Event()
+    public Event() {}
+    public Event(Integer id, String title, String description, String address, String date)
     {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.address = address;
+        this.date = date;
     }
 
     public Event(JSONObject eventJSON)
@@ -24,7 +30,7 @@ public class Event
         try
         {
             this.id = Integer.parseInt(eventJSON.get("event_id").toString());
-            this.name = eventJSON
+            this.title = eventJSON
                     .getJSONObject("event_version")
                     .getJSONObject("version")
                     .getString("evtml_name");
@@ -58,14 +64,14 @@ public class Event
         this.id = id;
     }
 
-    public String getName()
+    public String getTitle()
     {
-        return name; //.substring(21, name.length()-17);
+        return title; //.substring(21, name.length()-17);
     }
 
-    public void setName(String name)
+    public void setTitle(String name)
     {
-        this.name = name;
+        this.title = name;
     }
 
     public String getDescription()
@@ -101,7 +107,7 @@ public class Event
     @Override
     public String toString()
     {
-        return "Event [ id: " + id + "; name: " + name + "; address: " + address + "; date: " + date + " ]";
+        return "Event [ id: " + id + "; name: " + title + "; address: " + address + "; date: " + date + " ]";
     }
 
 

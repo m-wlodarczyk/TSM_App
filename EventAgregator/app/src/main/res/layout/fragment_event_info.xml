@@ -7,10 +7,10 @@
 
 
     <TextView
-        android:id="@+id/event_name"
+        android:id="@+id/event_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="event_name"
+        android:text="event_title"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:textStyle="bold" />
 
@@ -52,8 +52,15 @@
             android:layout_height="wrap_content"
             android:text="event_address"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
     </LinearLayout>
 
+    <Button
+        android:id="@+id/add_to_interesting_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DODAJ DO INTERESUJĄCYCH"
+        android:background="@color/colorPrimary"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -33,7 +33,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private GoogleMap mMap;
     private List<LatLng> markers = new ArrayList<>();
     private LatLngBounds.Builder bounds;
-    private ArrayList<String> titles;
+    private ArrayList<String> names;
     private ProgressDialog progressDialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,12 +50,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         return v;
     }
 
-    public void setMarkers(List<LatLng> markers, LatLngBounds.Builder bounds, ArrayList<String> titles)
+    public void setMarkers(List<LatLng> markers, LatLngBounds.Builder bounds, ArrayList<String> names)
     {
         Log.d("kot", "setMarkers");
         this.markers = markers;
         this.bounds = bounds;
-        this.titles = titles;
+        this.names = names;
     }
 
     /**
@@ -71,7 +71,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         mMap = googleMap;
         for (int i=0; i< markers.size(); i++)
         {
-            mMap.addMarker(new MarkerOptions().position(markers.get(i))).setTitle(titles.get(i));
+            mMap.addMarker(new MarkerOptions().position(markers.get(i))).setTitle(names.get(i));
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 150));
         }
     }
