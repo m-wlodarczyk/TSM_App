@@ -3,11 +3,15 @@ package com.example.marcin.eventagregator;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +21,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +33,132 @@ public class EventInfoFragment extends Fragment
     private View view;
     private Event event;
     private AdView mAdView;
+    private boolean existsInDB;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         view = inflater.inflate(R.layout.fragment_event_info, container, false);
-        Bundle bundle = getArguments();
+
+        final Bundle bundle = getArguments();
         String eventJSON = bundle.getString("event");
         event = Event.createFromJSON(eventJSON);
+
+        // check if event is saved as interesting in DB
+        InterestingEventsDbHelper dbHelper = new InterestingEventsDbHelper(getContext());
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                InterestingEventsDbContract.InterestingEvent._ID
+        };
+
+        // Filter results WHERE "id" = event.id'
+        String selection = InterestingEventsDbContract.InterestingEvent._ID + " = " + event.getId();
+
+        Cursor cursor = db.query(
+                InterestingEventsDbContract.InterestingEvent.TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                selection,              // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+
+        ArrayList<Long> itemIds = new ArrayList<>();
+        while(cursor.moveToNext()) {
+            long itemId = cursor.getLong(
+                    cursor.getColumnIndexOrThrow(InterestingEventsDbContract.InterestingEvent._ID));
+            itemIds.add(itemId);
+        }
+        cursor.close();
+        existsInDB = itemIds.size() > 0;
+        final Button button = view.findViewById(R.id.add_to_interesting_button);
+        if (existsInDB)
+        {
+            button.setText("Usuń z interesujących");
+            button.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grade_gold_36dp, 0);
+
+        }
+        else
+        {
+            button.setText("Dodaj do interesujących");
+            button.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (existsInDB)
+                {
+                    String selection = InterestingEventsDbContract.InterestingEvent._ID + " = ?";
+                    String[] selectionArgs = {Long.toString(event.getId())};
+                    db.delete(InterestingEventsDbContract.InterestingEvent.TABLE_NAME, selection, selectionArgs);
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Usunięto z interesujących.", Snackbar.LENGTH_SHORT).show();
+                    existsInDB = false;
+                    button.setText("Dodaj do interesujących");
+                    button.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
+                }
+                else
+                {
+                    ContentValues values = new ContentValues();
+                    values.put(InterestingEventsDbContract.InterestingEvent._ID, event.getId());
+                    values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_TITLE, event.getTitle());
+                    values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DESCRIPTION, event.getDescription());
+                    values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ADDRESS, event.getAddress());
+                    values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DATE, event.getDate());
+                    // Insert the new row, returning the primary key value of the new row
+                    long newRowId = db.insert(InterestingEventsDbContract.InterestingEvent.TABLE_NAME, null, values);
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Dodano do interesujących.", Snackbar.LENGTH_SHORT).show();
+                    existsInDB = true;
+                    button.setText("Usuń z interesujących");
+                    button.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grade_gold_36dp, 0);
+
+                }
+
+
+
+            }
+        });
+
+
+        LatLngBounds.Builder bounds = LatLngBounds.builder();
+        ArrayList<String> names = new ArrayList<>();
+        List<LatLng> markers = new ArrayList<>();
+        Geocoder geocoder = new Geocoder(getContext());
+
+        List<Address> addressList = null;
+        try
+        {
+            addressList = geocoder.getFromLocationName(event.getAddress(), 1);
+        }
+        catch (IOException e)
+        {
+            Log.d("exception: ", e.getMessage());
+        }
+
+        Address address1 = addressList.get(0);
+        double x = address1.getLatitude();
+        double y = address1.getLongitude();
+        markers.add(new LatLng(x, y));
+        bounds.include(new LatLng(x, y));
+        // add additional points to set zoom
+        bounds.include(new LatLng(x-0.01, y));
+        bounds.include(new LatLng(x, y+0.01));
+
+        names.add(event.getTitle());
+
+        Fragment mapFragment = new MapFragment();
+        ((MapFragment) mapFragment).setMarkers(markers, bounds, names);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.map, mapFragment);
+        transaction.commit();
 
         mAdView = view.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -50,86 +174,8 @@ public class EventInfoFragment extends Fragment
         address.setText(event.getAddress());
         description.setText(event.getDescription());
 
-        InterestingEventsDbHelper dbHelper = new InterestingEventsDbHelper(getContext());
-
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        Cursor cursor = db.query(
-                InterestingEventsDbContract.InterestingEvent.TABLE_NAME,   // The table to query
-                null,             // The array of columns to return (pass null to get all)
-                null,              // The columns for the WHERE clause
-                null,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                null               // The sort order
-        );
-
-        List itemIds = new ArrayList<>();
-        ArrayList<Event> eventsList = new ArrayList();
-        while (cursor.moveToNext())
-        {
-            long itemId = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(InterestingEventsDbContract.InterestingEvent._ID));
-            Integer id = Integer.parseInt(cursor.getString(0));
-            String nameS = cursor.getString(1);
-            String descriptionS = cursor.getString(2);
-            String addressS = cursor.getString(3);
-            String dateS = cursor.getString(4);
-            Event event = new Event(id, nameS, descriptionS, addressS, dateS);
-            eventsList.add(event);
-        }
-        cursor.close();
-        for (Event event : eventsList)
-        {
-            Log.d("koy", event.toString());
-
-        }
 
 
-        Button addToInterestingButton = view.findViewById(R.id.add_to_interesting_button);
-        addToInterestingButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                InterestingEventsDbHelper dbHelper = new InterestingEventsDbHelper(getContext());
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-                ContentValues values = new ContentValues();
-                values.put(InterestingEventsDbContract.InterestingEvent._ID, event.getId());
-                values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_TITLE, event.getTitle());
-                values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DESCRIPTION, event.getDescription());
-                values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ADDRESS, event.getAddress());
-                values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DATE, event.getDate());
-                // Insert the new row, returning the primary key value of the new row
-                long newRowId = db.insert(InterestingEventsDbContract.InterestingEvent.TABLE_NAME, null, values);
-
-
-                SQLiteDatabase db2 = dbHelper.getReadableDatabase();
-
-// Define a projection that specifies which columns from the database
-// you will actually use after this query.
-                String[] projection = {
-                        BaseColumns._ID,
-                        InterestingEventsDbContract.InterestingEvent._ID,
-                        InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_TITLE,
-                        InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DESCRIPTION,
-                        InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ADDRESS,
-                        InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DATE
-                };
-
-// Filter results WHERE "name" = 'My Title'
-                String selection = InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_TITLE + " = ?";
-                String[] selectionArgs = {"My Title"};
-
-// How you want the results sorted in the resulting Cursor
-//                String sortOrder =
-//                        InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_SUBTITLE + " DESC";
-
-
-
-            }
-        });
         return view;
     }
 }

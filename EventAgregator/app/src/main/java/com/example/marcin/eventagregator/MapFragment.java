@@ -34,13 +34,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private List<LatLng> markers = new ArrayList<>();
     private LatLngBounds.Builder bounds;
     private ArrayList<String> names;
-    private ProgressDialog progressDialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        Log.d("kot", "onCreateView");
-
         super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
@@ -52,7 +50,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
     public void setMarkers(List<LatLng> markers, LatLngBounds.Builder bounds, ArrayList<String> names)
     {
-        Log.d("kot", "setMarkers");
         this.markers = markers;
         this.bounds = bounds;
         this.names = names;
@@ -66,13 +63,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
-        Log.d("kot", "onMapReady");
-
         mMap = googleMap;
         for (int i=0; i< markers.size(); i++)
         {
             mMap.addMarker(new MarkerOptions().position(markers.get(i))).setTitle(names.get(i));
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 150));
         }
+
     }
 }

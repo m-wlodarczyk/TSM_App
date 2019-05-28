@@ -8,18 +8,18 @@
 
     <TextView
         android:id="@+id/event_title"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:text="event_title"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/linear_layout_1"
-        android:layout_below="@+id/event_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/event_title"
         android:orientation="horizontal">
 
         <TextView
@@ -39,9 +39,9 @@
 
     <LinearLayout
         android:id="@+id/linear_layout_2"
-        android:layout_below="@id/linear_layout_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/linear_layout_1"
         android:orientation="horizontal">
 
         <TextView
@@ -61,19 +61,22 @@
     </LinearLayout>
 
     <Button
-        android:layout_below="@id/linear_layout_2"
         android:id="@+id/add_to_interesting_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/linear_layout_2"
+        android:layout_margin="@dimen/fab_margin"
+        android:gravity="start|center"
+        android:paddingLeft="@dimen/fab_margin"
+        android:paddingRight="@dimen/fab_margin"
         android:background="@color/colorPrimary"
         android:text="DODAJ DO INTERESUJĄCYCH" />
 
     <TextView
         android:id="@+id/description_text"
-        android:layout_below="@id/add_to_interesting_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_below="@id/map"
         android:gravity="center"
         android:text="Opis"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -92,9 +95,17 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"/>
+            ads:adUnitId="" />
 
     </RelativeLayout>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/add_to_interesting_button"/>
 
     <ScrollView
         android:id="@+id/scroll_view"
@@ -113,8 +124,8 @@
             android:text="event_description"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-
     </ScrollView>
+
 
 
 </RelativeLayout>
