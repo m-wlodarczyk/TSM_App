@@ -37,4 +37,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.4.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.4.1'
 
+    //admob
+    implementation 'com.google.android.gms:play-services-ads:17.2.1'
+
+
 }
