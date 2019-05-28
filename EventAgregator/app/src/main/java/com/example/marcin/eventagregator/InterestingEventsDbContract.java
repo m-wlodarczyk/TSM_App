@@ -12,8 +12,9 @@ public final class InterestingEventsDbContract
     /* Inner class that defines the table contents */
     public static class InterestingEvent implements BaseColumns
     {
+        public static final String _ID = "id";
         public static final String TABLE_NAME = "InterestingEvent";
-        public static final String COLUMN_NAME_ID= "id";
+//        public static final String COLUMN_NAME_ID= "id";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_ADDRESS = "address";

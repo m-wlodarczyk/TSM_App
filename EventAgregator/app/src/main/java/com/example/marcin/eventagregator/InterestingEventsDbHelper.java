@@ -9,7 +9,7 @@ public class InterestingEventsDbHelper extends SQLiteOpenHelper
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + InterestingEventsDbContract.InterestingEvent.TABLE_NAME + " (" +
                     InterestingEventsDbContract.InterestingEvent._ID + " INTEGER PRIMARY KEY," +
-                    InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ID + " TEXT," +
+//                    InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ID + " TEXT," +
                     InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_TITLE + " TEXT," +
                     InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DESCRIPTION + " TEXT," +
                     InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ADDRESS + " TEXT," +

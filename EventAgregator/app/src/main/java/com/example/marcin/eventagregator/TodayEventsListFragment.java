@@ -26,6 +26,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +55,6 @@ public class TodayEventsListFragment extends Fragment
     ListView eventListView;
     private TextView dateTextView;
     private static EventListAdapter eventListAdapter;
-
     public static JSONObject convert(String xmlString)
     {
         XmlToJson xmlToJson = new XmlToJson.Builder(xmlString).build();
@@ -68,62 +71,6 @@ public class TodayEventsListFragment extends Fragment
         dateTextView = view.findViewById(R.id.date_textview);
         Calendar calendar = Calendar.getInstance();
         dateTextView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "." + (calendar.get(Calendar.MONTH)+1) + "." + calendar.get(Calendar.YEAR));
-
-        // read xml from file
-//        final String fileName = "events.xml";
-//        AssetManager assetManager = getContext().getAssets();
-//        InputStream is = null;
-//        try
-//        {
-//            is = assetManager.open(fileName);
-//        } catch (IOException e)
-//        {
-//            Log.d("exception", e.getMessage());
-//        }
-//        JSONObject obj = null;
-//        try
-//        {
-//            String s = null;
-//            try (BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.defaultCharset())))
-//            {
-//                s = br.lines().collect(Collectors.joining(System.lineSeparator()));
-//            }
-//
-//            obj = convert(s);
-//
-//        } catch (Exception e)
-//        {
-//            System.out.println(e.getMessage());
-//        }
-//        EventList eventList = null;
-//        try
-//        {
-//            eventList = new EventList(obj.getJSONObject("root").getJSONArray("event"));
-//        } catch (JSONException e)
-//        {
-//            Log.d("exception", e.getMessage());
-//        }
-//        for (int i = 0; i < eventList.length(); i++)
-//        {
-//            Log.d("koy", eventList.get(i).toString());
-//        }
-
-
-//        final ArrayList<Event> arrayListEvents = eventList.getEvents();
-//        eventListAdapter = new EventListAdapter(arrayListEvents, getContext());
-//        eventListView.setAdapter(eventListAdapter);
-//        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-//        {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-//            {
-//
-//                Event event = arrayListEvents.get(position);
-//
-//                Snackbar.make(view, "hmmmm", Snackbar.LENGTH_LONG)
-//                        .setAction("No action", null).show();
-//            }
-//        });
 
 
         // read xml from website
@@ -154,9 +101,7 @@ public class TodayEventsListFragment extends Fragment
             }
         });
 
-
         return view;
-
     }
 
     private void updateEvents(String url)

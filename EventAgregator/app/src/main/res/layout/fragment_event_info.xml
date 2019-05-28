@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/fab_margin"
@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/event_title"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="event_title"
@@ -15,6 +16,8 @@
         android:textStyle="bold" />
 
     <LinearLayout
+        android:id="@+id/linear_layout_1"
+        android:layout_below="@+id/event_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -35,6 +38,8 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linear_layout_2"
+        android:layout_below="@id/linear_layout_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -56,12 +61,16 @@
     </LinearLayout>
 
     <Button
+        android:layout_below="@id/linear_layout_2"
         android:id="@+id/add_to_interesting_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="DODAJ DO INTERESUJĄCYCH"
-        android:background="@color/colorPrimary"/>
+        android:background="@color/colorPrimary"
+        android:text="DODAJ DO INTERESUJĄCYCH" />
+
     <TextView
+        android:id="@+id/description_text"
+        android:layout_below="@id/add_to_interesting_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/fab_margin"
@@ -70,27 +79,42 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textStyle="bold" />
 
-    <ScrollView
+    <RelativeLayout
+        android:id="@+id/footer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:gravity="center">
 
-        <LinearLayout
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="50dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"/>
 
-            <TextView
-                android:id="@+id/event_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:justificationMode="inter_word"
-                android:text="event_description"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+    </RelativeLayout>
 
-        </LinearLayout>
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/footer"
+        android:layout_below="@id/description_text"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:fillViewport="true">
+
+        <TextView
+            android:id="@+id/event_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:justificationMode="inter_word"
+            android:text="event_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
     </ScrollView>
 
 
-</LinearLayout>
+</RelativeLayout>

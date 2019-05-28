@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class EventInfoFragment extends Fragment
 {
     private View view;
     private Event event;
+    private AdView mAdView;
 
     @Nullable
     @Override
@@ -32,18 +36,55 @@ public class EventInfoFragment extends Fragment
         String eventJSON = bundle.getString("event");
         event = Event.createFromJSON(eventJSON);
 
+        mAdView = view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         TextView name = view.findViewById(R.id.event_title);
         TextView date = view.findViewById(R.id.event_date);
         TextView address = view.findViewById(R.id.event_address);
         TextView description = view.findViewById(R.id.event_description);
 
-        Log.d("koy", event.toString());
-        Log.d("koy", event.getDescription());
-
         name.setText(event.getTitle());
         date.setText(event.getDate());
         address.setText(event.getAddress());
         description.setText(event.getDescription());
+
+        InterestingEventsDbHelper dbHelper = new InterestingEventsDbHelper(getContext());
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        Cursor cursor = db.query(
+                InterestingEventsDbContract.InterestingEvent.TABLE_NAME,   // The table to query
+                null,             // The array of columns to return (pass null to get all)
+                null,              // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+
+        List itemIds = new ArrayList<>();
+        ArrayList<Event> eventsList = new ArrayList();
+        while (cursor.moveToNext())
+        {
+            long itemId = cursor.getLong(
+                    cursor.getColumnIndexOrThrow(InterestingEventsDbContract.InterestingEvent._ID));
+            Integer id = Integer.parseInt(cursor.getString(0));
+            String nameS = cursor.getString(1);
+            String descriptionS = cursor.getString(2);
+            String addressS = cursor.getString(3);
+            String dateS = cursor.getString(4);
+            Event event = new Event(id, nameS, descriptionS, addressS, dateS);
+            eventsList.add(event);
+        }
+        cursor.close();
+        for (Event event : eventsList)
+        {
+            Log.d("koy", event.toString());
+
+        }
+
 
         Button addToInterestingButton = view.findViewById(R.id.add_to_interesting_button);
         addToInterestingButton.setOnClickListener(new View.OnClickListener()
@@ -55,7 +96,7 @@ public class EventInfoFragment extends Fragment
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                 ContentValues values = new ContentValues();
-                values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ID, event.getId());
+                values.put(InterestingEventsDbContract.InterestingEvent._ID, event.getId());
                 values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_TITLE, event.getTitle());
                 values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DESCRIPTION, event.getDescription());
                 values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ADDRESS, event.getAddress());
@@ -70,7 +111,7 @@ public class EventInfoFragment extends Fragment
 // you will actually use after this query.
                 String[] projection = {
                         BaseColumns._ID,
-                        InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ID,
+                        InterestingEventsDbContract.InterestingEvent._ID,
                         InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_TITLE,
                         InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DESCRIPTION,
                         InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ADDRESS,
@@ -85,36 +126,7 @@ public class EventInfoFragment extends Fragment
 //                String sortOrder =
 //                        InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_SUBTITLE + " DESC";
 
-                Cursor cursor = db2.query(
-                        InterestingEventsDbContract.InterestingEvent.TABLE_NAME,   // The table to query
-                        null,             // The array of columns to return (pass null to get all)
-                        null,              // The columns for the WHERE clause
-                        null,          // The values for the WHERE clause
-                        null,                   // don't group the rows
-                        null,                   // don't filter by row groups
-                        null               // The sort order
-                );
 
-                List itemIds = new ArrayList<>();
-                ArrayList<Event> eventsList = new ArrayList();
-                while (cursor.moveToNext())
-                {
-                    long itemId = cursor.getLong(
-                            cursor.getColumnIndexOrThrow(InterestingEventsDbContract.InterestingEvent._ID));
-                    Integer id = Integer.parseInt(cursor.getString(1));
-                    String name = cursor.getString(2);
-                    String description = cursor.getString(3);
-                    String address = cursor.getString(4);
-                    String date = cursor.getString(5);
-                    Event event = new Event(id, name, description, address, date);
-                    eventsList.add(event);
-                }
-                cursor.close();
-                for (Event event : eventsList)
-                {
-                    Log.d("koy", event.toString());
-
-                }
 
             }
         });
