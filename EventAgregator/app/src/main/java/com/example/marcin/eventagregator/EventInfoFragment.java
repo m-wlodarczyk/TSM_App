@@ -23,6 +23,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -129,8 +130,7 @@ public class EventInfoFragment extends Fragment
 
 
         LatLngBounds.Builder bounds = LatLngBounds.builder();
-        ArrayList<String> names = new ArrayList<>();
-        List<LatLng> markers = new ArrayList<>();
+        List<MarkerOptions> markers = new ArrayList<>();
         Geocoder geocoder = new Geocoder(getContext());
 
         List<Address> addressList = null;
@@ -146,23 +146,23 @@ public class EventInfoFragment extends Fragment
         Address address1 = addressList.get(0);
         double x = address1.getLatitude();
         double y = address1.getLongitude();
-        markers.add(new LatLng(x, y));
+        LatLng latLng = new LatLng(x, y);
+        markers.add(new MarkerOptions().position(latLng).title(event.getTitle()));
         bounds.include(new LatLng(x, y));
         // add additional points to set zoom
         bounds.include(new LatLng(x-0.01, y));
         bounds.include(new LatLng(x, y+0.01));
 
-        names.add(event.getTitle());
-
         Fragment mapFragment = new MapFragment();
-        ((MapFragment) mapFragment).setMarkers(markers, bounds, names);
+        ((MapFragment) mapFragment).setMarkers(markers, getContext());
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.map, mapFragment);
         transaction.commit();
 
         mAdView = view.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        AdRequest.Builder builder = new AdRequest.Builder();
+//        builder.setLocation();
+        mAdView.loadAd(builder.build());
 
         TextView name = view.findViewById(R.id.event_title);
         TextView date = view.findViewById(R.id.event_date);

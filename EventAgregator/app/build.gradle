@@ -40,5 +40,9 @@ dependencies {
     //admob
     implementation 'com.google.android.gms:play-services-ads:17.2.1'
 
+    // location
+    implementation "com.google.android.gms:play-services-location:15.0.1"
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
+
 
 }

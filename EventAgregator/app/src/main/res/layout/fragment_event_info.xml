@@ -70,7 +70,8 @@
         android:paddingLeft="@dimen/fab_margin"
         android:paddingRight="@dimen/fab_margin"
         android:background="@color/colorPrimary"
-        android:text="DODAJ DO INTERESUJĄCYCH" />
+        android:text="DODAJ DO INTERESUJĄCYCH"
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/description_text"
