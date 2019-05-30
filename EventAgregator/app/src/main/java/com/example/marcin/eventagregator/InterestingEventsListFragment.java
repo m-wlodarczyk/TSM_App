@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -24,7 +27,9 @@ import java.util.TimeZone;
 public class InterestingEventsListFragment extends Fragment
 {
 
-    View view;
+    private View view;
+    private AdView mAdView;
+
     private static EventListAdapter eventListAdapter;
     private ListView eventListView;
     @Nullable
@@ -32,6 +37,11 @@ public class InterestingEventsListFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         view = inflater.inflate(R.layout.fragment_interesting_events_list, container, false);
+
+        mAdView = view.findViewById(R.id.adView);
+        AdRequest.Builder builder = new AdRequest.Builder();
+//        builder.setLocation();
+        mAdView.loadAd(builder.build());
 
         final ArrayList<Event> interestingEvents = Db.getAll(getContext());
 //        String pattern = "yyyy-MM-dd HH:mm:ss";

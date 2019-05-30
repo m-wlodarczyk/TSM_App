@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity
         MapsInitializer.initialize(getApplicationContext());
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(this, getString(R.string.ad_app_id));
 
 
 

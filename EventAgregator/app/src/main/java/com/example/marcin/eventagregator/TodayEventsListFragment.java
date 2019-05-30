@@ -55,6 +55,8 @@ public class TodayEventsListFragment extends Fragment
     ListView eventListView;
     private TextView dateTextView;
     private static EventListAdapter eventListAdapter;
+    private AdView mAdView;
+
     public static JSONObject convert(String xmlString)
     {
         XmlToJson xmlToJson = new XmlToJson.Builder(xmlString).build();
@@ -67,6 +69,12 @@ public class TodayEventsListFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.fragment_today_events_list, container, false);
+
+        mAdView = view.findViewById(R.id.adView);
+        AdRequest.Builder builder = new AdRequest.Builder();
+//        builder.setLocation();
+        mAdView.loadAd(builder.build());
+
         eventListView = view.findViewById(R.id.list);
         dateTextView = view.findViewById(R.id.date_textview);
         Calendar calendar = Calendar.getInstance();

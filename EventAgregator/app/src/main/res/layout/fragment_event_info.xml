@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/fab_margin"
+    android:layout_marginStart="@dimen/fab_margin"
+    android:layout_marginTop="@dimen/fab_margin"
+    android:layout_marginEnd="@dimen/fab_margin"
     android:orientation="vertical">
 
 
@@ -65,26 +67,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/linear_layout_2"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/fab_margin">
+        android:layout_margin="@dimen/fab_margin"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/add_to_interesting_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DODAJ DO INTERESUJĄCYCH"
-            android:textColor="#FFFFFF"
+            android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:layout_weight="1"/>
+            android:text="DODAJ DO INTERESUJĄCYCH"
+            android:textColor="#FFFFFF" />
 
         <ImageButton
             android:id="@+id/share_button"
-            android:layout_marginStart="@dimen/fab_margin"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:src="@drawable/ic_share_white_24dp"
-            android:layout_weight="1"/>
+            android:src="@drawable/ic_share_white_24dp" />
     </LinearLayout>
 
 
@@ -98,22 +100,15 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textStyle="bold" />
 
-    <RelativeLayout
-        android:id="@+id/footer"
+
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:gravity="center">
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/ad_banner_id" />
 
-        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
-
-    </RelativeLayout>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -127,7 +122,7 @@
         android:id="@+id/scroll_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/footer"
+        android:layout_above="@+id/adView"
         android:layout_below="@id/description_text"
         android:layout_marginBottom="@dimen/fab_margin"
         android:fillViewport="true">

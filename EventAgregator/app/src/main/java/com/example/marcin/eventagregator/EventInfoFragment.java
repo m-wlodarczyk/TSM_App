@@ -49,6 +49,12 @@ public class EventInfoFragment extends Fragment
         String eventJSON = bundle.getString("event");
         event = Event.createFromJSON(eventJSON);
 
+        // ad banner
+        mAdView = view.findViewById(R.id.adView);
+        AdRequest.Builder builder = new AdRequest.Builder();
+//        builder.setLocation();
+        mAdView.loadAd(builder.build());
+
         ImageButton sharebutton = view.findViewById(R.id.share_button);
         sharebutton.setOnClickListener(new View.OnClickListener()
         {
@@ -156,12 +162,6 @@ public class EventInfoFragment extends Fragment
         {
             //TODO empty fragment
         }
-
-
-        mAdView = view.findViewById(R.id.adView);
-        AdRequest.Builder builder = new AdRequest.Builder();
-//        builder.setLocation();
-        mAdView.loadAd(builder.build());
 
         TextView name = view.findViewById(R.id.event_title);
         TextView date = view.findViewById(R.id.event_date);

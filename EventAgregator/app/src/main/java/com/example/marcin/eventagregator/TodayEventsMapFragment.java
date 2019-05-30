@@ -40,6 +40,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -69,14 +71,18 @@ public class TodayEventsMapFragment extends Fragment
 
     private View view;
     private ProgressDialog progressDialog;
-
-
+    private AdView mAdView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         view = inflater.inflate(R.layout.fragment_today_events_map, container, false);
+
+        mAdView = view.findViewById(R.id.adView);
+        AdRequest.Builder builder = new AdRequest.Builder();
+//        builder.setLocation();
+        mAdView.loadAd(builder.build());
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = "http://www.poznan.pl/mim/public/ws-information/?co=getCurrentDayEvents";
