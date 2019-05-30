@@ -1,5 +1,6 @@
 package com.example.marcin.eventagregator;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,13 +10,16 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,13 +52,31 @@ public class NotificationJobService extends JobService
 
         new Thread(new Runnable()
         {
+            @TargetApi(Build.VERSION_CODES.O)
             @Override
             public void run()
             {
-                String withoutTimePattern = "yyyy-MM-dd";
-                SimpleDateFormat sdf = new SimpleDateFormat(withoutTimePattern);
+//                String withoutTimePattern = "yyyy-MM-dd";
+                String withTimePattern = "yyyy-MM-dd HH:mm";
+
+                SimpleDateFormat sdf = new SimpleDateFormat(withTimePattern);
                 Calendar calendar = Calendar.getInstance();
-                String currentDateString = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+                int year =  calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH) + 1;
+                int hour = calendar.get(Calendar.HOUR);
+                int minute = calendar.get(Calendar.MINUTE);
+                int second = calendar.get(Calendar.SECOND);
+
+                String monthString = String.format("%02d" , (month+1));
+                String dayOfMonthString = String.format("%02d" , dayOfMonth);
+                String hourString = String.format("%02d" , hour);
+                String minuteString = String.format("%02d" , minute);
+                String secondString = String.format("%02d" , second);
+
+//                String currentDateWithoutTimeString = year + "-" + monthString + "-" + dayOfMonthString;
+                String currentDateWithTimeString = + year + "-" + monthString + "-" + dayOfMonthString +
+                        " " + hourString + ":" + minuteString;
 
                 ArrayList<Event> allInterestingEvents = Db.getAll(getBaseContext());
                 ArrayList<Event> showNotificationEvents = new ArrayList<>();
@@ -63,8 +85,19 @@ public class NotificationJobService extends JobService
                 {
                     try
                     {
-                        Date currentDate = sdf.parse(currentDateString);
-                        Date eventDate = sdf.parse(event.getDate());
+                        Date currentDate = sdf.parse(currentDateWithTimeString);
+                        Date eventDate = sdf.parse(event.getDate().substring(0, 16));
+
+                        LocalDateTime currentLocalDate = currentDate.toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime();
+                        LocalDateTime eventLocalDate = eventDate.toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime();
+
+                        Duration duration = Duration.between(eventLocalDate, currentLocalDate);
+                        long differenceInHours = duration.toDays();
+                        // TODO
                         if (currentDate.compareTo(eventDate) == 0)
                             showNotificationEvents.add(event);
                     } catch (ParseException e)
@@ -104,7 +137,6 @@ public class NotificationJobService extends JobService
         }
     }
 
-
     private void showNotification(ArrayList<Event> events)
     {
         createNotificationChannel();
@@ -139,7 +171,7 @@ public class NotificationJobService extends JobService
         {
             Notification summaryNotification =
                     new NotificationCompat.Builder(getBaseContext(), CHANNEL_ID)
-                            .setContentText(notification_id + " nadchodzące wydarzenia")
+                            .setContentText("Nadchodzące wydarzenia: " + (notification_id-1))
                             //set content text to support devices running API level < 24
                             .setSmallIcon(R.mipmap.ic_launcher_round)
                             .setStyle(new NotificationCompat.InboxStyle()
@@ -148,6 +180,7 @@ public class NotificationJobService extends JobService
                             .setGroup(GROUP_KEY_WORK_EMAIL)
                             //set this notification as the summary for the group
                             .setGroupSummary(true)
+                            .setAutoCancel(true)
                             .build();
 
             notificationManager.notify(SUMMARY_ID, summaryNotification);
