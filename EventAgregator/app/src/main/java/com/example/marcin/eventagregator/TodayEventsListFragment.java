@@ -137,7 +137,6 @@ public class TodayEventsListFragment extends Fragment
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                             {
-                                // TODO
                                 Event event = arrayListEvents.get(position);
 
                                 Bundle bundle = new Bundle();

@@ -1,12 +1,10 @@
 package com.example.marcin.eventagregator;
 
 import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -17,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -26,7 +25,11 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class EventInfoFragment extends Fragment
@@ -46,90 +49,84 @@ public class EventInfoFragment extends Fragment
         String eventJSON = bundle.getString("event");
         event = Event.createFromJSON(eventJSON);
 
+        ImageButton sharebutton = view.findViewById(R.id.share_button);
+        sharebutton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, event.getTitle()); // TODO set url
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
+
+
         // check if event is saved as interesting in DB
-        InterestingEventsDbHelper dbHelper = new InterestingEventsDbHelper(getContext());
-        final SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                InterestingEventsDbContract.InterestingEvent._ID
-        };
-
-        // Filter results WHERE "id" = event.id'
-        String selection = InterestingEventsDbContract.InterestingEvent._ID + " = " + event.getId();
-
-        Cursor cursor = db.query(
-                InterestingEventsDbContract.InterestingEvent.TABLE_NAME,   // The table to query
-                projection,             // The array of columns to return (pass null to get all)
-                selection,              // The columns for the WHERE clause
-                null,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                null               // The sort order
-        );
-
-        ArrayList<Long> itemIds = new ArrayList<>();
-        while(cursor.moveToNext()) {
-            long itemId = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(InterestingEventsDbContract.InterestingEvent._ID));
-            itemIds.add(itemId);
-        }
-        cursor.close();
-        existsInDB = itemIds.size() > 0;
+        existsInDB = Db.exists(event.getId(), getContext());
         final Button button = view.findViewById(R.id.add_to_interesting_button);
         if (existsInDB)
         {
             button.setText("Usuń z interesujących");
             button.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grade_gold_36dp, 0);
-
-        }
-        else
+        } else
         {
             button.setText("Dodaj do interesujących");
             button.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
 
-        button.setOnClickListener(new View.OnClickListener()
+        String withoutTimePattern = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(withoutTimePattern);
+        Calendar calendar = Calendar.getInstance();
+        String currentDateString = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH)+1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+
+        try
         {
-            @Override
-            public void onClick(View v)
+            Date currentDate = sdf.parse(currentDateString);
+            Date eventDate = sdf.parse(event.getDate());
+
+            if (eventDate.before(currentDate))
             {
-                if (existsInDB)
-                {
-                    String selection = InterestingEventsDbContract.InterestingEvent._ID + " = ?";
-                    String[] selectionArgs = {Long.toString(event.getId())};
-                    db.delete(InterestingEventsDbContract.InterestingEvent.TABLE_NAME, selection, selectionArgs);
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Usunięto z interesujących.", Snackbar.LENGTH_SHORT).show();
-                    existsInDB = false;
-                    button.setText("Dodaj do interesujących");
-                    button.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-
-                }
-                else
-                {
-                    ContentValues values = new ContentValues();
-                    values.put(InterestingEventsDbContract.InterestingEvent._ID, event.getId());
-                    values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_TITLE, event.getTitle());
-                    values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DESCRIPTION, event.getDescription());
-                    values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ADDRESS, event.getAddress());
-                    values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DATE, event.getDate());
-                    // Insert the new row, returning the primary key value of the new row
-                    long newRowId = db.insert(InterestingEventsDbContract.InterestingEvent.TABLE_NAME, null, values);
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Dodano do interesujących.", Snackbar.LENGTH_SHORT).show();
-                    existsInDB = true;
-                    button.setText("Usuń z interesujących");
-                    button.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grade_gold_36dp, 0);
-
-                }
-
-
-
+                button.setText("Wydarzenie zakończone");
             }
-        });
+            else
+            {
+                button.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (existsInDB)
+                        {
+                            Db.deleteById(event.getId(), getContext());
+                            Snackbar.make(getActivity().findViewById(android.R.id.content), "Usunięto z interesujących.", Snackbar.LENGTH_SHORT).show();
+                            existsInDB = false;
+                            button.setText("Dodaj do interesujących");
+                            button.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
+                        } else
+                        {
+                            Db.insert(event, getContext());
+                            Snackbar.make(getActivity().findViewById(android.R.id.content), "Dodano do interesujących.", Snackbar.LENGTH_SHORT).show();
+                            existsInDB = true;
+                            button.setText("Usuń z interesujących");
+                            button.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grade_gold_36dp, 0);
+
+                        }
+
+                    }
+                });
+            }
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
 
 
-        LatLngBounds.Builder bounds = LatLngBounds.builder();
+
+
         List<MarkerOptions> markers = new ArrayList<>();
         Geocoder geocoder = new Geocoder(getContext());
 
@@ -137,27 +134,29 @@ public class EventInfoFragment extends Fragment
         try
         {
             addressList = geocoder.getFromLocationName(event.getAddress(), 1);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             Log.d("exception: ", e.getMessage());
         }
 
-        Address address1 = addressList.get(0);
-        double x = address1.getLatitude();
-        double y = address1.getLongitude();
-        LatLng latLng = new LatLng(x, y);
-        markers.add(new MarkerOptions().position(latLng).title(event.getTitle()));
-        bounds.include(new LatLng(x, y));
-        // add additional points to set zoom
-        bounds.include(new LatLng(x-0.01, y));
-        bounds.include(new LatLng(x, y+0.01));
+        if (!addressList.isEmpty())
+        {
+            Address address1 = addressList.get(0);
+            double x = address1.getLatitude();
+            double y = address1.getLongitude();
+            LatLng latLng = new LatLng(x, y);
+            markers.add(new MarkerOptions().position(latLng).title(event.getTitle()));
 
-        Fragment mapFragment = new MapFragment();
-        ((MapFragment) mapFragment).setMarkers(markers, getContext());
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.map, mapFragment);
-        transaction.commit();
+            Fragment mapFragment = new MapFragment();
+            ((MapFragment) mapFragment).setMarkers(markers, getContext());
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.map, mapFragment);
+            transaction.commit();
+        } else
+        {
+            //TODO empty fragment
+        }
+
 
         mAdView = view.findViewById(R.id.adView);
         AdRequest.Builder builder = new AdRequest.Builder();
@@ -173,7 +172,6 @@ public class EventInfoFragment extends Fragment
         date.setText(event.getDate());
         address.setText(event.getAddress());
         description.setText(event.getDescription());
-
 
 
         return view;

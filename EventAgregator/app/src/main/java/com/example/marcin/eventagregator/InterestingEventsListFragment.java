@@ -1,7 +1,5 @@
 package com.example.marcin.eventagregator;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,8 +12,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class InterestingEventsListFragment extends Fragment
 {
@@ -29,50 +33,41 @@ public class InterestingEventsListFragment extends Fragment
     {
         view = inflater.inflate(R.layout.fragment_interesting_events_list, container, false);
 
-        InterestingEventsDbHelper dbHelper = new InterestingEventsDbHelper(getContext());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        final ArrayList<Event> interestingEvents = Db.getAll(getContext());
+//        String pattern = "yyyy-MM-dd HH:mm:ss";
+        String withoutTimePattern = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(withoutTimePattern);
+        Calendar calendar = Calendar.getInstance();
+        String currentDateString = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH)+1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
-        Cursor cursor = db.query(
-                InterestingEventsDbContract.InterestingEvent.TABLE_NAME,   // The table to query
-                null,             // The array of columns to return (pass null to get all)
-                null,              // The columns for the WHERE clause
-                null,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                null               // The sort order
-        );
+        for (Event event : interestingEvents)
+        {
+            try
+            {
+                Date currentDate = sdf.parse(currentDateString);
+                Date eventDate = sdf.parse(event.getDate());
+                if (eventDate.before(currentDate))
+                {
+                    // event has been ended
+                    interestingEvents.remove(event);
+                    Db.deleteById(event.getId(), getContext());
+                }
+            } catch (ParseException e)
+            {
+                e.printStackTrace();
+            }
+        }
 
-        ArrayList<Long> itemIds = new ArrayList<>();
-        final ArrayList<Event> eventsList = new ArrayList();
-        while (cursor.moveToNext())
-        {
-            long itemId = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(InterestingEventsDbContract.InterestingEvent._ID));
-            Integer id = Integer.parseInt(cursor.getString(0));
-            String nameS = cursor.getString(1);
-            String descriptionS = cursor.getString(2);
-            String addressS = cursor.getString(3);
-            String dateS = cursor.getString(4);
-            Event event = new Event(id, nameS, descriptionS, addressS, dateS);
-            eventsList.add(event);
-            itemIds.add(itemId);
-        }
-        cursor.close();
-        for (Event event : eventsList)
-        {
-            Log.d("koy", event.toString());
-        }
 
         eventListView = view.findViewById(R.id.list);
-        eventListAdapter = new EventListAdapter(eventsList, getContext());
+        eventListAdapter = new EventListAdapter(interestingEvents, getContext());
         eventListView.setAdapter(eventListAdapter);
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                // TODO
-                Event event = eventsList.get(position);
+                Event event = interestingEvents.get(position);
 
                 Bundle bundle = new Bundle();
                 bundle.putString("event", event.toJSON());

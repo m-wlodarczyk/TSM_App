@@ -97,7 +97,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
      */
-    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
@@ -150,6 +149,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                             } else
                             {
                                 Snackbar.make(view, "Nie znaleziono lokalizacji urządzenia.", Snackbar.LENGTH_LONG).show();
+                                if (markers.size() == 1)
+                                {
+                                    double x = markers.get(0).getPosition().latitude;
+                                    double y = markers.get(0).getPosition().longitude;
+                                    // add additional points to set zoom
+                                    bounds.include(new LatLng(x - 0.01, y - 0.01));
+                                    bounds.include(new LatLng(x + 0.01, y + 0.01));
+                                }
                                 for (MarkerOptions marker : markers)
                                 {
                                     bounds.include(marker.getPosition());
@@ -170,6 +177,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     {
         for (MarkerOptions marker : markers)
         {
+            if (markers.size() == 1)
+            {
+                double x = markers.get(0).getPosition().latitude;
+                double y = markers.get(0).getPosition().longitude;
+                // add additional points to set zoom
+                bounds.include(new LatLng(x - 0.01, y - 0.01));
+                bounds.include(new LatLng(x + 0.01, y + 0.01));
+            }
+
             bounds.include(marker.getPosition());
             mMap.addMarker(marker);
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 150));
