@@ -71,7 +71,6 @@ public class TodayEventsMapFragment extends Fragment
 
     private View view;
     private ProgressDialog progressDialog;
-    private AdView mAdView;
 
     @Nullable
     @Override
@@ -79,10 +78,7 @@ public class TodayEventsMapFragment extends Fragment
     {
         view = inflater.inflate(R.layout.fragment_today_events_map, container, false);
 
-        mAdView = view.findViewById(R.id.adView);
-        AdRequest.Builder builder = new AdRequest.Builder();
-//        builder.setLocation();
-        mAdView.loadAd(builder.build());
+        MainActivity.enableAd(view);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = "http://www.poznan.pl/mim/public/ws-information/?co=getCurrentDayEvents";

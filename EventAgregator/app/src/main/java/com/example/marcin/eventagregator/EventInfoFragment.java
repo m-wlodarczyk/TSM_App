@@ -36,7 +36,6 @@ public class EventInfoFragment extends Fragment
 {
     private View view;
     private Event event;
-    private AdView mAdView;
     private boolean existsInDB;
 
     @Nullable
@@ -49,11 +48,7 @@ public class EventInfoFragment extends Fragment
         String eventJSON = bundle.getString("event");
         event = Event.createFromJSON(eventJSON);
 
-        // ad banner
-        mAdView = view.findViewById(R.id.adView);
-        AdRequest.Builder builder = new AdRequest.Builder();
-//        builder.setLocation();
-        mAdView.loadAd(builder.build());
+        MainActivity.enableAd(view);
 
         ImageButton sharebutton = view.findViewById(R.id.share_button);
         sharebutton.setOnClickListener(new View.OnClickListener()
@@ -131,8 +126,6 @@ public class EventInfoFragment extends Fragment
         }
 
 
-
-
         List<MarkerOptions> markers = new ArrayList<>();
         Geocoder geocoder = new Geocoder(getContext());
 
@@ -145,7 +138,7 @@ public class EventInfoFragment extends Fragment
             Log.d("exception: ", e.getMessage());
         }
 
-        if (!addressList.isEmpty())
+        if (addressList != null && addressList.size() > 0)
         {
             Address address1 = addressList.get(0);
             double x = address1.getLatitude();

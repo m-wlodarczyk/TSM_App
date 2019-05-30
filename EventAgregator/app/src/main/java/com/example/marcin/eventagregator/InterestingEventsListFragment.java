@@ -44,30 +44,6 @@ public class InterestingEventsListFragment extends Fragment
         mAdView.loadAd(builder.build());
 
         final ArrayList<Event> interestingEvents = Db.getAll(getContext());
-//        String pattern = "yyyy-MM-dd HH:mm:ss";
-        String withoutTimePattern = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(withoutTimePattern);
-        Calendar calendar = Calendar.getInstance();
-        String currentDateString = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH)+1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
-
-        for (Event event : interestingEvents)
-        {
-            try
-            {
-                Date currentDate = sdf.parse(currentDateString);
-                Date eventDate = sdf.parse(event.getDate());
-                if (eventDate.before(currentDate))
-                {
-                    // event has been ended
-                    interestingEvents.remove(event);
-                    Db.deleteById(event.getId(), getContext());
-                }
-            } catch (ParseException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
 
         eventListView = view.findViewById(R.id.list);
         eventListAdapter = new EventListAdapter(interestingEvents, getContext());

@@ -1,8 +1,12 @@
 package com.example.marcin.eventagregator;
 
+import android.app.ActivityManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,12 +29,20 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.maps.MapsInitializer;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 // git test
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
     private static final String TAG = "NotificationJobService";
-    private AdView mAdView;
+    public static Location location;
+    private static final int JOB_SERVICE_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,45 +51,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         MapsInitializer.initialize(getApplicationContext());
-
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         MobileAds.initialize(this, getString(R.string.ad_app_id));
 
+        configureDrawerAndToolbar();
+        enablePushNotificationService();
+        deleteOldInterestingEvents();
+        startTodayEventsListFragment();
+        checkIfNotificationPressed();
 
 
-        ComponentName componentName = new ComponentName(this, NotificationJobService.class);
-        JobInfo info = new JobInfo.Builder(123, componentName)
-                .setPeriodic(15 * 60 * 1000)
-                .setPersisted(true)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .build();
-
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode = scheduler.schedule(info);
-
-        if (resultCode == JobScheduler.RESULT_SUCCESS)
-            Log.d(TAG, "Job scheduled");
-        else
-            Log.d(TAG, "Job failed");
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        Fragment testFragment = new TodayEventsListFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment, testFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     @Override
@@ -149,5 +132,127 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public static void enableAd(View view)
+    {
+        AdView mAdView = view.findViewById(R.id.adView);
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if (location != null)
+        {
+            builder.setLocation(location);
+        }
+        mAdView.loadAd(builder.build());
+    }
+
+    private void configureDrawerAndToolbar()
+    {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void enablePushNotificationService()
+    {
+        if (!isJobServiceOn(this))
+        {
+            ComponentName componentName = new ComponentName(this, NotificationJobService.class);
+            JobInfo info = new JobInfo.Builder(JOB_SERVICE_ID, componentName)
+                    .setPeriodic(15 * 60 * 1000)
+                    .setPersisted(true)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                    .build();
+
+            JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+            int resultCode = scheduler.schedule(info);
+
+            if (resultCode == JobScheduler.RESULT_SUCCESS)
+                Log.d(TAG, "Job scheduled");
+            else
+                Log.d(TAG, "Job failed");
+        }
+
+    }
+
+    private void deleteOldInterestingEvents()
+    {
+        final ArrayList<Event> interestingEvents = Db.getAll(this);
+//        String pattern = "yyyy-MM-dd HH:mm:ss";
+        String withoutTimePattern = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(withoutTimePattern);
+        Calendar calendar = Calendar.getInstance();
+        String currentDateString = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+
+        for (Event event : interestingEvents)
+        {
+            try
+            {
+                Date currentDate = sdf.parse(currentDateString);
+                Date eventDate = sdf.parse(event.getDate());
+                if (eventDate.before(currentDate))
+                {
+                    // event has been ended
+                    interestingEvents.remove(event);
+                    Db.deleteById(event.getId(), this);
+                }
+            } catch (ParseException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void checkIfNotificationPressed()
+    {
+        Intent intent = getIntent();
+        boolean isNotificationPressed = Boolean.parseBoolean(intent.getStringExtra("notificationPressed"));
+
+        if (isNotificationPressed)
+        {
+            String eventJSON = intent.getStringExtra("event");
+            Bundle bundle = new Bundle();
+            bundle.putString("event", eventJSON);
+
+            Fragment newFragment = new EventInfoFragment();
+            newFragment.setArguments(bundle);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    }
+
+    public static boolean isJobServiceOn(Context context)
+    {
+        JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+        boolean hasBeenScheduled = false;
+
+        for (JobInfo jobInfo : scheduler.getAllPendingJobs())
+        {
+            if (jobInfo.getId() == JOB_SERVICE_ID)
+            {
+                hasBeenScheduled = true;
+                break;
+            }
+        }
+
+        return hasBeenScheduled;
+    }
+
+    private void startTodayEventsListFragment()
+    {
+        Fragment newFragment = new TodayEventsListFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
 }

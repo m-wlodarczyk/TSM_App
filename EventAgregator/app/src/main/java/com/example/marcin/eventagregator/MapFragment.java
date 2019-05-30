@@ -134,16 +134,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                         {
                             if (location != null)
                             {
+                                MainActivity.location = location;
                                 mMap.setMyLocationEnabled(true);
                                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                                 bounds.include(latLng);
-                                bounds.include(new LatLng(latLng.latitude - 0.05, latLng.longitude - 0.05));
-                                bounds.include(new LatLng(latLng.latitude + 0.05, latLng.longitude + 0.05));
+                                bounds.include(new LatLng(latLng.latitude - 0.01, latLng.longitude - 0.01));
+                                bounds.include(new LatLng(latLng.latitude + 0.01, latLng.longitude + 0.01));
 
                                 for (MarkerOptions marker : markers)
                                 {
                                     mMap.addMarker(marker);
+                                    bounds.include(marker.getPosition());
                                     mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 150));
                                 }
                             } else

@@ -1,25 +1,38 @@
 package com.example.marcin.eventagregator;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class NotificationJobService extends JobService
 {
     private static final String TAG = "NotificationJobService";
     private static final String CHANNEL_ID = "Interesting Events";
+    private static final String GROUP_KEY_WORK_EMAIL = "com.android.example.INTERESTING_EVENTS";
+    private static final int SUMMARY_ID = 0;
     private boolean jobCancelled = false;
+    private int notification_id;
 
     @Override
     public boolean onStartJob(JobParameters params)
     {
+        notification_id = 1;
         Log.d(TAG, "Job started");
         doBackgroundWork(params);
         return false;
@@ -30,40 +43,36 @@ public class NotificationJobService extends JobService
 //        Intent intent = new Intent(this, AlertDetails.class);
 //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 //        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        createNotificationChannel();
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext(), CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle("My notification")
-                .setContentText("Much longer text that cannot fit one line...asdfasfsadfasdfasdfasdfasdfsdfsdfasdasdfasdfsadf")
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Much longer text that cannot fit one line...asdfasfsadfasdfasdfasdfasdfsdfsdfasdasdfasdfsadf"))
-//                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(0, builder.build());
+        Log.d(TAG, "doBackgroundWork");
 
         new Thread(new Runnable()
         {
             @Override
             public void run()
             {
+                String withoutTimePattern = "yyyy-MM-dd";
+                SimpleDateFormat sdf = new SimpleDateFormat(withoutTimePattern);
+                Calendar calendar = Calendar.getInstance();
+                String currentDateString = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
+                ArrayList<Event> allInterestingEvents = Db.getAll(getBaseContext());
+                ArrayList<Event> showNotificationEvents = new ArrayList<>();
 
-                for (int i = 0; i < 10; i++)
+                for (Event event : allInterestingEvents)
                 {
-                    Log.d(TAG, "run: " + i);
-                    if (jobCancelled)
-                        return;
                     try
                     {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e)
+                        Date currentDate = sdf.parse(currentDateString);
+                        Date eventDate = sdf.parse(event.getDate());
+                        if (currentDate.compareTo(eventDate) == 0)
+                            showNotificationEvents.add(event);
+                    } catch (ParseException e)
                     {
-                        e.printStackTrace();
+                        Log.d("exception: ", e.getMessage());
                     }
                 }
+                showNotification(showNotificationEvents);
                 jobFinished(params, false);
             }
         }).start();
@@ -85,7 +94,7 @@ public class NotificationJobService extends JobService
         {
             CharSequence name = "Interesujące wydarzenie";
             String description = "Powiadomienie nadchodzącym wydarzeniu, którym się zainteresowałeś.";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
@@ -94,4 +103,57 @@ public class NotificationJobService extends JobService
             notificationManager.createNotificationChannel(channel);
         }
     }
+
+
+    private void showNotification(ArrayList<Event> events)
+    {
+        createNotificationChannel();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        for (Event event : events)
+        {
+            Log.d(TAG, event.getTitle());
+
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            intent.putExtra("event", event.toJSON());
+            intent.putExtra("notificationPressed", "true");
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addNextIntentWithParentStack(intent);
+            PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Notification notification = new NotificationCompat.Builder(getBaseContext(), CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setGroup(GROUP_KEY_WORK_EMAIL)
+                    .setContentText(event.getTitle())
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(event.getTitle()))
+                    .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
+                    .build();
+
+            // notificationId is a unique int for each notification that you must define
+            notificationManager.notify(notification_id++, notification);
+        }
+
+        if (events.size() > 0)
+        {
+            Notification summaryNotification =
+                    new NotificationCompat.Builder(getBaseContext(), CHANNEL_ID)
+                            .setContentText(notification_id + " nadchodzące wydarzenia")
+                            //set content text to support devices running API level < 24
+                            .setSmallIcon(R.mipmap.ic_launcher_round)
+                            .setStyle(new NotificationCompat.InboxStyle()
+                                    .setSummaryText("Masz nadchodzące wydarzenia"))
+                            //specify which group this notification belongs to
+                            .setGroup(GROUP_KEY_WORK_EMAIL)
+                            //set this notification as the summary for the group
+                            .setGroupSummary(true)
+                            .build();
+
+            notificationManager.notify(SUMMARY_ID, summaryNotification);
+        }
+
+
+    }
+
 }
