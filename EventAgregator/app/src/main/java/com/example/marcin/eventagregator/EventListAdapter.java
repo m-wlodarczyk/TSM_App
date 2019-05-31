@@ -11,6 +11,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.marcin.eventagregator.domain.Event;
+
 import java.util.ArrayList;
 
 public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClickListener
@@ -28,7 +30,7 @@ public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClic
 
     public EventListAdapter(ArrayList<Event> data, Context context)
     {
-        super(context, R.layout.row_item, data);
+        super(context, R.layout.row_event, data);
         this.mContext = context;
     }
 
@@ -60,7 +62,7 @@ public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClic
         {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.row_item, parent, false);
+            convertView = inflater.inflate(R.layout.row_event, parent, false);
 
             viewHolder.eventName = convertView.findViewById(R.id.event_title);
 //            viewHolder.eventDate = convertView.findViewById(R.id.event_date);

@@ -1,13 +1,11 @@
 package com.example.marcin.eventagregator;
 
-import android.app.ActivityManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,11 +17,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.marcin.eventagregator.database.DbInterestingEvents;
+import com.example.marcin.eventagregator.database.DbNotificationsTime;
+import com.example.marcin.eventagregator.domain.Event;
+import com.example.marcin.eventagregator.domain.NotificationTime;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -34,7 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 // git test
 public class MainActivity extends AppCompatActivity
@@ -53,6 +52,12 @@ public class MainActivity extends AppCompatActivity
         MapsInitializer.initialize(getApplicationContext());
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         MobileAds.initialize(this, getString(R.string.ad_app_id));
+
+//        DbNotificationsTime.deleteById(1 ,this);
+//        DbNotificationsTime.deleteById(2 ,this);
+//
+//        DbNotificationsTime.insert(new NotificationTime(0, 10), this);
+//        DbNotificationsTime.insert(new NotificationTime(0, 1), this);
 
         configureDrawerAndToolbar();
         enablePushNotificationService();
@@ -104,6 +109,8 @@ public class MainActivity extends AppCompatActivity
             }
             case R.id.nav_settings:
             {
+                fragmentClass = SettingsFragment.class;
+
                 break;
             }
             default:
@@ -182,7 +189,7 @@ public class MainActivity extends AppCompatActivity
 
     private void deleteOldInterestingEvents()
     {
-        final ArrayList<Event> interestingEvents = Db.getAll(this);
+        final ArrayList<Event> interestingEvents = DbInterestingEvents.getAll(this);
 //        String pattern = "yyyy-MM-dd HH:mm:ss";
         String withoutTimePattern = "yyyy-MM-dd";
         SimpleDateFormat sdf = new SimpleDateFormat(withoutTimePattern);
@@ -199,7 +206,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     // event has been ended
                     interestingEvents.remove(event);
-                    Db.deleteById(event.getId(), this);
+                    DbInterestingEvents.deleteById(event.getId(), this);
                 }
             } catch (ParseException e)
             {

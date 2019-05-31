@@ -5,24 +5,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.marcin.eventagregator.database.DbInterestingEvents;
+import com.example.marcin.eventagregator.domain.Event;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class InterestingEventsListFragment extends Fragment
 {
@@ -43,7 +37,7 @@ public class InterestingEventsListFragment extends Fragment
 //        builder.setLocation();
         mAdView.loadAd(builder.build());
 
-        final ArrayList<Event> interestingEvents = Db.getAll(getContext());
+        final ArrayList<Event> interestingEvents = DbInterestingEvents.getAll(getContext());
 
         eventListView = view.findViewById(R.id.list);
         eventListAdapter = new EventListAdapter(interestingEvents, getContext());

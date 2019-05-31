@@ -14,10 +14,14 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.example.marcin.eventagregator.database.DbInterestingEvents;
+import com.example.marcin.eventagregator.database.DbNotificationsTime;
+import com.example.marcin.eventagregator.domain.Event;
+import com.example.marcin.eventagregator.domain.NotificationTime;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -56,50 +60,36 @@ public class NotificationJobService extends JobService
             @Override
             public void run()
             {
-//                String withoutTimePattern = "yyyy-MM-dd";
-                String withTimePattern = "yyyy-MM-dd HH:mm";
+                String currentDateWithHourString = getCurrentDateWithHour();
 
-                SimpleDateFormat sdf = new SimpleDateFormat(withTimePattern);
-                Calendar calendar = Calendar.getInstance();
-                int year =  calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH) + 1;
-                int hour = calendar.get(Calendar.HOUR);
-                int minute = calendar.get(Calendar.MINUTE);
-                int second = calendar.get(Calendar.SECOND);
-
-                String monthString = String.format("%02d" , (month+1));
-                String dayOfMonthString = String.format("%02d" , dayOfMonth);
-                String hourString = String.format("%02d" , hour);
-                String minuteString = String.format("%02d" , minute);
-                String secondString = String.format("%02d" , second);
-
-//                String currentDateWithoutTimeString = year + "-" + monthString + "-" + dayOfMonthString;
-                String currentDateWithTimeString = + year + "-" + monthString + "-" + dayOfMonthString +
-                        " " + hourString + ":" + minuteString;
-
-                ArrayList<Event> allInterestingEvents = Db.getAll(getBaseContext());
+                ArrayList<Event> allInterestingEvents = DbInterestingEvents.getAll(getBaseContext());
                 ArrayList<Event> showNotificationEvents = new ArrayList<>();
+                ArrayList<NotificationTime> notificationsTime = DbNotificationsTime.getAll(getBaseContext());
 
                 for (Event event : allInterestingEvents)
                 {
                     try
                     {
-                        Date currentDate = sdf.parse(currentDateWithTimeString);
-                        Date eventDate = sdf.parse(event.getDate().substring(0, 16));
+                        long differenceInHours = differenceInHours(event.getDate(), currentDateWithHourString);
 
-                        LocalDateTime currentLocalDate = currentDate.toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime();
-                        LocalDateTime eventLocalDate = eventDate.toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime();
+                        Log.d("difference0", event.getDate());
+                        Log.d("difference00", currentDateWithHourString);
 
-                        Duration duration = Duration.between(eventLocalDate, currentLocalDate);
-                        long differenceInHours = duration.toDays();
-                        // TODO
-                        if (currentDate.compareTo(eventDate) == 0)
-                            showNotificationEvents.add(event);
+                        for (NotificationTime notificationTime : notificationsTime)
+                        {
+                            Log.d("difference1", Long.toString(differenceInHours));
+                            Log.d("difference2", Long.toString(notificationTime.getWholeTimeInHours()));
+
+                            if (differenceInHours <= notificationTime.getWholeTimeInHours())
+                            {
+                                if (!showNotificationEvents.contains(event))
+                                {
+                                    showNotificationEvents.add(event);
+                                    Log.d(TAG, event.toString());
+                                }
+                            }
+                        }
+
                     } catch (ParseException e)
                     {
                         Log.d("exception: ", e.getMessage());
@@ -109,6 +99,46 @@ public class NotificationJobService extends JobService
                 jobFinished(params, false);
             }
         }).start();
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private static long differenceInHours(String eventDateString, String currentDateWithTimeString) throws ParseException
+    {
+        String withHourPattern = "yyyy-MM-dd HH";
+        SimpleDateFormat sdf = new SimpleDateFormat(withHourPattern);
+
+        Date currentDate = sdf.parse(currentDateWithTimeString);
+        Date eventDate = sdf.parse(eventDateString.substring(0, 14));
+
+        LocalDateTime currentLocalDate = currentDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        LocalDateTime eventLocalDate = eventDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        Duration duration = Duration.between(currentLocalDate, eventLocalDate);
+        return duration.toHours();
+    }
+
+    private static String getCurrentDateWithHour()
+    {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR);
+
+
+        String monthString = String.format("%02d", month);
+        String dayOfMonthString = String.format("%02d", dayOfMonth);
+        String hourString = String.format("%02d", hour);
+
+//                String currentDateWithoutTimeString = year + "-" + monthString + "-" + dayOfMonthString;
+        String currentDateWithHourString = +year + "-" + monthString + "-" + dayOfMonthString +
+                " " + hourString;
+
+        return currentDateWithHourString;
     }
 
     @Override
@@ -171,7 +201,7 @@ public class NotificationJobService extends JobService
         {
             Notification summaryNotification =
                     new NotificationCompat.Builder(getBaseContext(), CHANNEL_ID)
-                            .setContentText("Nadchodzące wydarzenia: " + (notification_id-1))
+                            .setContentText("Nadchodzące wydarzenia: " + (notification_id - 1))
                             //set content text to support devices running API level < 24
                             .setSmallIcon(R.mipmap.ic_launcher_round)
                             .setStyle(new NotificationCompat.InboxStyle()

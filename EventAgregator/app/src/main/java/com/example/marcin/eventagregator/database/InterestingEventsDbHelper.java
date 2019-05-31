@@ -1,4 +1,4 @@
-package com.example.marcin.eventagregator;
+package com.example.marcin.eventagregator.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

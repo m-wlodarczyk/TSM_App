@@ -1,13 +1,15 @@
-package com.example.marcin.eventagregator;
+package com.example.marcin.eventagregator.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.marcin.eventagregator.domain.Event;
+
 import java.util.ArrayList;
 
-public class Db
+public class DbInterestingEvents
 {
     public static ArrayList<Event> getAll(Context context)
     {

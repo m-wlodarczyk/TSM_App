@@ -1,4 +1,4 @@
-package com.example.marcin.eventagregator;
+package com.example.marcin.eventagregator.domain;
 
 import android.util.Log;
 
@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 public class Event
 {
@@ -110,7 +112,6 @@ public class Event
         return "Event [ id: " + id + "; name: " + title + "; address: " + address + "; date: " + date + " ]";
     }
 
-
     public String toJSON()
     {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -141,6 +142,25 @@ public class Event
             Log.d("exception", e.getMessage());
         }
         return event;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Objects.equals(id, event.id) &&
+                Objects.equals(title, event.title) &&
+                Objects.equals(description, event.description) &&
+                Objects.equals(address, event.address) &&
+                Objects.equals(date, event.date);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, title, description, address, date);
     }
 }
 

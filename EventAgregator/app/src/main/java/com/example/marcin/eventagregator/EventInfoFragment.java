@@ -1,6 +1,5 @@
 package com.example.marcin.eventagregator;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -18,10 +17,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.example.marcin.eventagregator.database.DbInterestingEvents;
+import com.example.marcin.eventagregator.domain.Event;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -66,7 +64,7 @@ public class EventInfoFragment extends Fragment
 
 
         // check if event is saved as interesting in DB
-        existsInDB = Db.exists(event.getId(), getContext());
+        existsInDB = DbInterestingEvents.exists(event.getId(), getContext());
         final Button button = view.findViewById(R.id.add_to_interesting_button);
         if (existsInDB)
         {
@@ -101,7 +99,7 @@ public class EventInfoFragment extends Fragment
                     {
                         if (existsInDB)
                         {
-                            Db.deleteById(event.getId(), getContext());
+                            DbInterestingEvents.deleteById(event.getId(), getContext());
                             Snackbar.make(getActivity().findViewById(android.R.id.content), "Usunięto z interesujących.", Snackbar.LENGTH_SHORT).show();
                             existsInDB = false;
                             button.setText("Dodaj do interesujących");
@@ -109,7 +107,7 @@ public class EventInfoFragment extends Fragment
 
                         } else
                         {
-                            Db.insert(event, getContext());
+                            DbInterestingEvents.insert(event, getContext());
                             Snackbar.make(getActivity().findViewById(android.R.id.content), "Dodano do interesujących.", Snackbar.LENGTH_SHORT).show();
                             existsInDB = true;
                             button.setText("Usuń z interesujących");

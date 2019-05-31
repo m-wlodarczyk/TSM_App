@@ -2,8 +2,6 @@ package com.example.marcin.eventagregator;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.res.AssetManager;
-import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -26,24 +24,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+import com.example.marcin.eventagregator.domain.Event;
+import com.example.marcin.eventagregator.domain.EventList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.stream.Collectors;
 
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 
