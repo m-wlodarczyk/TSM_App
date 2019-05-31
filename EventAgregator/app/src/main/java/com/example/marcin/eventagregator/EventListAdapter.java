@@ -37,11 +37,9 @@ public class EventListAdapter extends ArrayAdapter<Event> implements View.OnClic
     @Override
     public void onClick(View v)
     {
-//        TODO
         int position = (Integer) v.getTag();
         Object object = getItem(position);
         Event event = (Event) object;
-        Log.d("kot", "klik");
         Snackbar.make(v, "Release date ", Snackbar.LENGTH_LONG)
                 .setAction("No action", null).show();
     }

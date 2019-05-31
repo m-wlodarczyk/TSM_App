@@ -6,6 +6,7 @@ public class NotificationTime
     private int daysBeforeEvent;
     private int hoursBeforeEvent;
 
+
     public NotificationTime(int id, int daysBeforeEvent, int hoursBeforeEvent)
     {
         this.id = id;

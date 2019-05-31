@@ -10,15 +10,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.marcin.eventagregator.database.DbNotificationsTime;
+import com.example.marcin.eventagregator.domain.Event;
 import com.example.marcin.eventagregator.domain.NotificationTime;
+
+
+import java.util.ArrayList;
 
 public class SettingsNotificationsFragment extends Fragment
 {
     private View view;
-
+    private static NotificationTimeListAdapter notificationTimeListAdapter;
+    private ListView notificationsTimeListView;
+    private ArrayList<NotificationTime> notificationsTime;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -28,10 +35,18 @@ public class SettingsNotificationsFragment extends Fragment
 
         spinnersInit();
         createNotificationButtonInit();
-
+        notificationsTimeListInit();
 
 
         return view;
+    }
+
+    public void notificationsTimeListInit()
+    {
+        notificationsTimeListView = view.findViewById(R.id.list_notifications);
+        notificationsTime = DbNotificationsTime.getAll(getContext());
+        notificationTimeListAdapter = new NotificationTimeListAdapter(notificationsTime, getContext(), view);
+        notificationsTimeListView.setAdapter(notificationTimeListAdapter);
     }
 
     private void spinnersInit()
@@ -66,6 +81,7 @@ public class SettingsNotificationsFragment extends Fragment
                 int hours = Integer.parseInt(hoursSpinner.getSelectedItem().toString());
 
                 DbNotificationsTime.insert(new NotificationTime(days, hours), getContext());
+                notificationsTimeListInit();
                 Snackbar.make(view, "Utworzono powiadomienie.", Snackbar.LENGTH_SHORT).show();
             }
         });

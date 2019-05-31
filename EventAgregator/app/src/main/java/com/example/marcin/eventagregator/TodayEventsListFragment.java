@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -122,6 +123,25 @@ public class TodayEventsListFragment extends Fragment
                         }
 
                         final ArrayList<Event> arrayListEvents = eventList.getEvents();
+
+                        // info about empty list
+                        if (arrayListEvents.size() > 0)
+                        {
+                            ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
+                            progressBar.setVisibility(View.INVISIBLE);
+
+                            TextView emptyList = view.findViewById(R.id.empty_text_view);
+                            emptyList.setVisibility(View.INVISIBLE);
+                        } else
+                        {
+                            ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
+                            progressBar.setVisibility(View.VISIBLE);
+
+                            TextView emptyList = view.findViewById(R.id.empty_text_view);
+                            emptyList.setVisibility(View.VISIBLE);
+                        }
+
+
                         eventListAdapter = new EventListAdapter(arrayListEvents, getContext());
                         eventListView.setAdapter(eventListAdapter);
                         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener()

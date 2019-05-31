@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.marcin.eventagregator.database.DbInterestingEvents;
 import com.example.marcin.eventagregator.domain.Event;
@@ -38,6 +40,24 @@ public class InterestingEventsListFragment extends Fragment
         mAdView.loadAd(builder.build());
 
         final ArrayList<Event> interestingEvents = DbInterestingEvents.getAll(getContext());
+
+        // info about empty list
+        if (interestingEvents.size() > 0)
+        {
+            ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
+            progressBar.setVisibility(View.INVISIBLE);
+
+            TextView emptyList = view.findViewById(R.id.empty_text_view);
+            emptyList.setVisibility(View.INVISIBLE);
+        } else
+        {
+            ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
+            progressBar.setVisibility(View.INVISIBLE);
+
+            TextView emptyList = view.findViewById(R.id.empty_text_view);
+            emptyList.setVisibility(View.VISIBLE);
+        }
+
 
         eventListView = view.findViewById(R.id.list);
         eventListAdapter = new EventListAdapter(interestingEvents, getContext());

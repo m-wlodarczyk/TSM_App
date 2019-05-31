@@ -17,7 +17,7 @@ public class Event
     private String address;
     private String date;
 
-    public Event() {}
+    public Event(){}
     public Event(Integer id, String title, String description, String address, String date)
     {
         this.id = id;

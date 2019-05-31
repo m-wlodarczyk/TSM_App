@@ -53,12 +53,6 @@ public class MainActivity extends AppCompatActivity
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         MobileAds.initialize(this, getString(R.string.ad_app_id));
 
-//        DbNotificationsTime.deleteById(1 ,this);
-//        DbNotificationsTime.deleteById(2 ,this);
-//
-//        DbNotificationsTime.insert(new NotificationTime(0, 10), this);
-//        DbNotificationsTime.insert(new NotificationTime(0, 1), this);
-
         configureDrawerAndToolbar();
         enablePushNotificationService();
         deleteOldInterestingEvents();
