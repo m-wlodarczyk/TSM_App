@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,7 @@ public class TodayEventsListFragment extends Fragment
     ListView eventListView;
     private TextView dateTextView;
     private static EventListAdapter eventListAdapter;
+    private SwipeRefreshLayout pullToRefresh;
 
     public static JSONObject convert(String xmlString)
     {
@@ -60,16 +62,54 @@ public class TodayEventsListFragment extends Fragment
 
         MainActivity.enableAd(view);
 
+        setDateTextView();
+
         eventListView = view.findViewById(R.id.list);
+
+        pullToRefresh = view.findViewById(R.id.pull_to_refresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override
+            public void onRefresh()
+            {
+                TextView dateTextView = view.findViewById(R.id.date_textview);
+                String year = dateTextView.getText().toString().substring(0, 2);
+                String month = dateTextView.getText().toString().substring(3, 5);
+                String dayOfMonth = dateTextView.getText().toString().substring(6, 10);
+                updateEvents(URL + "?co=getDayEvent&date=" + dayOfMonth + "-" + month + "-" + year, true);
+
+            }
+        });
+
+        updateEvents(URL + "?co=getCurrentDayEvents", false);
+        calendarButtonInit();
+
+        return view;
+    }
+
+    private void setDateTextView()
+    {
         dateTextView = view.findViewById(R.id.date_textview);
+
         Calendar calendar = Calendar.getInstance();
-        dateTextView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "." + (calendar.get(Calendar.MONTH)+1) + "." + calendar.get(Calendar.YEAR));
+        int year = calendar.get(Calendar.YEAR);
+        int monthOfYear = (calendar.get(Calendar.MONTH) + 1);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
+        String yearS = Integer.toString(year);
+        String monthS = Integer.toString(monthOfYear + 1);
+        String dayOfMonthS = Integer.toString(dayOfMonth);
 
-        // read xml from website
-        // Instantiate the RequestQueue.
-        updateEvents(URL + "?co=getCurrentDayEvents");
+        if (dayOfMonth < 10)
+            dayOfMonthS = "0" + Integer.toString(dayOfMonth);
+        if ((monthOfYear) < 10)
+            monthS = "0" + Integer.toString(monthOfYear);
 
+        dateTextView.setText(dayOfMonthS + "." + monthS + "." + yearS);
+    }
+
+    private void calendarButtonInit()
+    {
         Button dateButton = view.findViewById(R.id.date_button);
         dateButton.setOnClickListener(new View.OnClickListener()
         {
@@ -78,14 +118,27 @@ public class TodayEventsListFragment extends Fragment
             {
                 Calendar calendar = Calendar.getInstance();
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT,
-                        new DatePickerDialog.OnDateSetListener() {
+                        new DatePickerDialog.OnDateSetListener()
+                        {
 
                             @Override
                             public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                String pickedDate = dayOfMonth + "." + (monthOfYear+1) + "." + year;
+                                                  int monthOfYear, int dayOfMonth)
+                            {
+                                pullToRefresh.setRefreshing(true);
+                                String yearS = Integer.toString(year);
+                                String monthS = Integer.toString(monthOfYear + 1);
+                                String dayOfMonthS = Integer.toString(dayOfMonth);
+
+                                if (dayOfMonth < 10)
+                                    dayOfMonthS = "0" + Integer.toString(dayOfMonth);
+                                if ((monthOfYear + 1) < 10)
+                                    monthS = "0" + Integer.toString(monthOfYear + 1);
+
+                                String pickedDate = dayOfMonthS + "." + monthS + "." + yearS;
                                 dateTextView.setText(pickedDate);
-                                updateEvents(URL + "?co=getDayEvent&date=" + year + "-" + (monthOfYear+1) + "-" + dayOfMonth );
+
+                                updateEvents(URL + "?co=getDayEvent&date=" + yearS + "-" + monthS + "-" + dayOfMonthS, true);
 
 
                             }
@@ -93,12 +146,19 @@ public class TodayEventsListFragment extends Fragment
                 datePickerDialog.show();
             }
         });
-
-        return view;
     }
 
-    private void updateEvents(String url)
+    private void updateEvents(String url, final boolean isPullToRefresh)
     {
+        ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+
+        TextView emptyList = view.findViewById(R.id.empty_text_view);
+        emptyList.setText("BRAK ELEMNTÓW DO WYŚWIETLENIA.");
+        emptyList.setVisibility(View.INVISIBLE);
+
+        // read xml from website
+        // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getContext());
 //        String url = "http://www.poznan.pl/mim/public/ws-information/?co=getCurrentDayEvents";
 
@@ -114,7 +174,7 @@ public class TodayEventsListFragment extends Fragment
                         JSONObject obj = convert(xmlString);
                         EventList eventList = null;
                         try
-                        {   
+                        {
                             eventList = new EventList(obj.getJSONObject("root").getJSONArray("event"));
 
                         } catch (JSONException e)
@@ -124,7 +184,7 @@ public class TodayEventsListFragment extends Fragment
 
                         final ArrayList<Event> arrayListEvents = eventList.getEvents();
 
-                        checkIfListhasEvents(arrayListEvents);
+                        checkIfListHasEvents(arrayListEvents);
 
 
                         eventListAdapter = new EventListAdapter(arrayListEvents, getContext());
@@ -146,9 +206,12 @@ public class TodayEventsListFragment extends Fragment
                                 transaction.addToBackStack(null);
                                 transaction.commit();
 
-
                             }
                         });
+
+                        if (isPullToRefresh)
+                            pullToRefresh.setRefreshing(false);
+
 
                     }
                 }, new Response.ErrorListener()
@@ -165,13 +228,17 @@ public class TodayEventsListFragment extends Fragment
                 TextView emptyList = view.findViewById(R.id.empty_text_view);
                 emptyList.setText("NIE MOŻNA UZYSKAĆ POŁĄCZENIA.");
                 emptyList.setVisibility(View.VISIBLE);
+
+                if (isPullToRefresh)
+                    pullToRefresh.setRefreshing(false);
+
             }
         });
 
         queue.add(stringRequest);
     }
 
-    private void checkIfListhasEvents(ArrayList<Event> arrayListEvents)
+    private void checkIfListHasEvents(ArrayList<Event> arrayListEvents)
     {
         // info about empty list
         if (arrayListEvents.size() > 0)
