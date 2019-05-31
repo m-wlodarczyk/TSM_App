@@ -118,7 +118,7 @@ public class TodayEventsMapFragment extends Fragment
             public void onErrorResponse(VolleyError error)
             {
                 Log.d("exception", error.getMessage());
-                Snackbar.make(view, error.getMessage(), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "Nie można uzyskać połączenia.", Snackbar.LENGTH_LONG).show();
             }
         });
         queue.add(stringRequest);

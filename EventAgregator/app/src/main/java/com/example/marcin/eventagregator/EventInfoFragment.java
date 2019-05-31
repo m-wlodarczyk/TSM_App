@@ -48,21 +48,73 @@ public class EventInfoFragment extends Fragment
 
         MainActivity.enableAd(view);
 
-        ImageButton sharebutton = view.findViewById(R.id.share_button);
-        sharebutton.setOnClickListener(new View.OnClickListener()
+        shareButtonInit();
+        addToInterestingButtonInit();
+        mapFragmentInit();
+
+        eventTextViewsInit();
+
+
+        return view;
+    }
+
+    private void eventTextViewsInit()
+    {
+        TextView name = view.findViewById(R.id.event_title);
+        TextView date = view.findViewById(R.id.event_date);
+        TextView address = view.findViewById(R.id.event_address);
+        TextView description = view.findViewById(R.id.event_description);
+
+        name.setText(event.getTitle());
+        date.setText(event.getDate());
+        address.setText(event.getAddress());
+        description.setText(event.getDescription());
+    }
+
+    private void mapFragmentInit()
+    {
+        new Thread(new Runnable()
         {
             @Override
-            public void onClick(View v)
+            public void run()
             {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, event.getTitle()); // TODO set url
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                List<MarkerOptions> markers = new ArrayList<>();
+                Geocoder geocoder = new Geocoder(getContext());
+
+                List<Address> addressList = null;
+                try
+                {
+                    addressList = geocoder.getFromLocationName(event.getAddress(), 1);
+                } catch (IOException e)
+                {
+                    Log.d("exception: ", e.getMessage());
+                    Snackbar.make(view, "Nie można uzyskać połączenia.", Snackbar.LENGTH_SHORT).show();
+                }
+
+                if (addressList != null && addressList.size() > 0)
+                {
+                    Address address1 = addressList.get(0);
+                    double x = address1.getLatitude();
+                    double y = address1.getLongitude();
+                    LatLng latLng = new LatLng(x, y);
+                    markers.add(new MarkerOptions().position(latLng).title(event.getTitle()));
+
+                    Fragment mapFragment = new MapFragment();
+                    ((MapFragment) mapFragment).setMarkers(markers, getContext());
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.map, mapFragment);
+                    transaction.commit();
+                } else
+                {
+                    //TODO empty fragment
+                }
             }
-        });
+        }).start();
 
+    }
 
+    private void addToInterestingButtonInit()
+    {
         // check if event is saved as interesting in DB
         existsInDB = DbInterestingEvents.exists(event.getId(), getContext());
         final Button button = view.findViewById(R.id.add_to_interesting_button);
@@ -122,49 +174,22 @@ public class EventInfoFragment extends Fragment
         {
             e.printStackTrace();
         }
+    }
 
-
-        List<MarkerOptions> markers = new ArrayList<>();
-        Geocoder geocoder = new Geocoder(getContext());
-
-        List<Address> addressList = null;
-        try
+    private void shareButtonInit()
+    {
+        ImageButton sharebutton = view.findViewById(R.id.share_button);
+        sharebutton.setOnClickListener(new View.OnClickListener()
         {
-            addressList = geocoder.getFromLocationName(event.getAddress(), 1);
-        } catch (IOException e)
-        {
-            Log.d("exception: ", e.getMessage());
-        }
-
-        if (addressList != null && addressList.size() > 0)
-        {
-            Address address1 = addressList.get(0);
-            double x = address1.getLatitude();
-            double y = address1.getLongitude();
-            LatLng latLng = new LatLng(x, y);
-            markers.add(new MarkerOptions().position(latLng).title(event.getTitle()));
-
-            Fragment mapFragment = new MapFragment();
-            ((MapFragment) mapFragment).setMarkers(markers, getContext());
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.map, mapFragment);
-            transaction.commit();
-        } else
-        {
-            //TODO empty fragment
-        }
-
-        TextView name = view.findViewById(R.id.event_title);
-        TextView date = view.findViewById(R.id.event_date);
-        TextView address = view.findViewById(R.id.event_address);
-        TextView description = view.findViewById(R.id.event_description);
-
-        name.setText(event.getTitle());
-        date.setText(event.getDate());
-        address.setText(event.getAddress());
-        description.setText(event.getDescription());
-
-
-        return view;
+            @Override
+            public void onClick(View v)
+            {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, event.getTitle()); // TODO set url
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
     }
 }

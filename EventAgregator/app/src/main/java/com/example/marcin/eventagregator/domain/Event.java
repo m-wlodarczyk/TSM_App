@@ -44,6 +44,7 @@ public class Event
             this.description = this.getDescription().replaceAll("<[^>]*>", " ");
             this.description = this.getDescription().replaceAll("&quot;", "\"");
             this.description = this.getDescription().replaceAll("#[0-9]+|opr.sw", "");
+            this.description = this.getDescription().replaceAll("&;", " ");
 
 
             this.address = eventJSON

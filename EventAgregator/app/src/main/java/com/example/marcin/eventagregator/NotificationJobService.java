@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -56,7 +57,6 @@ public class NotificationJobService extends JobService
 
         new Thread(new Runnable()
         {
-            @TargetApi(Build.VERSION_CODES.O)
             @Override
             public void run()
             {
@@ -80,7 +80,7 @@ public class NotificationJobService extends JobService
                             Log.d("difference1", Long.toString(differenceInHours));
                             Log.d("difference2", Long.toString(notificationTime.getWholeTimeInHours()));
 
-                            if (differenceInHours <= notificationTime.getWholeTimeInHours())
+                            if (differenceInHours == notificationTime.getWholeTimeInHours() )
                             {
                                 if (!showNotificationEvents.contains(event))
                                 {
@@ -101,24 +101,29 @@ public class NotificationJobService extends JobService
         }).start();
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    private static long differenceInHours(String eventDateString, String currentDateWithTimeString) throws ParseException
+    private static long differenceInHours(String eventDateString, String currentDateWithHourString) throws ParseException
     {
         String withHourPattern = "yyyy-MM-dd HH";
-        SimpleDateFormat sdf = new SimpleDateFormat(withHourPattern);
+        long differenceInHours;
 
-        Date currentDate = sdf.parse(currentDateWithTimeString);
-        Date eventDate = sdf.parse(eventDateString.substring(0, 14));
+        if (Build.VERSION.SDK_INT >= 26)
+        {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(withHourPattern);
+            LocalDateTime currentLocalDate = LocalDateTime.parse(currentDateWithHourString, formatter);
+            LocalDateTime eventLocalDate = LocalDateTime.parse(eventDateString.substring(0, 13), formatter);
+            Duration duration = Duration.between(currentLocalDate, eventLocalDate);
+            differenceInHours = duration.toHours();
+        }
+        else
+        {
+            SimpleDateFormat sdf = new SimpleDateFormat(withHourPattern);
+            Date currentDate = sdf.parse(currentDateWithHourString);
+            Date eventDate = sdf.parse(eventDateString.substring(0, 13));
+            long diff = eventDate.getTime() - currentDate.getTime();
+            differenceInHours = (diff / (1000*60*60));
+        }
 
-        LocalDateTime currentLocalDate = currentDate.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        LocalDateTime eventLocalDate = eventDate.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-
-        Duration duration = Duration.between(currentLocalDate, eventLocalDate);
-        return duration.toHours();
+        return differenceInHours;
     }
 
     private static String getCurrentDateWithHour()
@@ -157,7 +162,7 @@ public class NotificationJobService extends JobService
         {
             CharSequence name = "Interesujące wydarzenie";
             String description = "Powiadomienie nadchodzącym wydarzeniu, którym się zainteresowałeś.";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
@@ -189,7 +194,7 @@ public class NotificationJobService extends JobService
                     .setContentText(event.getTitle())
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(event.getTitle()))
                     .setContentIntent(pendingIntent)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setAutoCancel(true)
                     .build();
 
@@ -211,6 +216,7 @@ public class NotificationJobService extends JobService
                             //set this notification as the summary for the group
                             .setGroupSummary(true)
                             .setAutoCancel(true)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .build();
 
             notificationManager.notify(SUMMARY_ID, summaryNotification);

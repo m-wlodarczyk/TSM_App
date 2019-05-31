@@ -124,22 +124,7 @@ public class TodayEventsListFragment extends Fragment
 
                         final ArrayList<Event> arrayListEvents = eventList.getEvents();
 
-                        // info about empty list
-                        if (arrayListEvents.size() > 0)
-                        {
-                            ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
-                            progressBar.setVisibility(View.INVISIBLE);
-
-                            TextView emptyList = view.findViewById(R.id.empty_text_view);
-                            emptyList.setVisibility(View.INVISIBLE);
-                        } else
-                        {
-                            ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
-                            progressBar.setVisibility(View.VISIBLE);
-
-                            TextView emptyList = view.findViewById(R.id.empty_text_view);
-                            emptyList.setVisibility(View.VISIBLE);
-                        }
+                        checkIfListhasEvents(arrayListEvents);
 
 
                         eventListAdapter = new EventListAdapter(arrayListEvents, getContext());
@@ -172,11 +157,38 @@ public class TodayEventsListFragment extends Fragment
             public void onErrorResponse(VolleyError error)
             {
                 Log.d("exception", error.getMessage());
-                Snackbar.make(view, error.getMessage(), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "Nie można uzyskać połączenia.", Snackbar.LENGTH_LONG).show();
+
+                ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
+                progressBar.setVisibility(View.INVISIBLE);
+
+                TextView emptyList = view.findViewById(R.id.empty_text_view);
+                emptyList.setText("NIE MOŻNA UZYSKAĆ POŁĄCZENIA.");
+                emptyList.setVisibility(View.VISIBLE);
             }
         });
 
         queue.add(stringRequest);
+    }
+
+    private void checkIfListhasEvents(ArrayList<Event> arrayListEvents)
+    {
+        // info about empty list
+        if (arrayListEvents.size() > 0)
+        {
+            ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
+            progressBar.setVisibility(View.INVISIBLE);
+
+            TextView emptyList = view.findViewById(R.id.empty_text_view);
+            emptyList.setVisibility(View.INVISIBLE);
+        } else
+        {
+            ProgressBar progressBar = view.findViewById(R.id.empty_progress_bar);
+            progressBar.setVisibility(View.INVISIBLE);
+
+            TextView emptyList = view.findViewById(R.id.empty_text_view);
+            emptyList.setVisibility(View.VISIBLE);
+        }
     }
 
 
