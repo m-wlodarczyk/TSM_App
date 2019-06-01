@@ -13,6 +13,7 @@ public class InterestingEventsDbHelper extends SQLiteOpenHelper
                     InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_TITLE + " TEXT," +
                     InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DESCRIPTION + " TEXT," +
                     InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ADDRESS + " TEXT," +
+                    InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_URL + " TEXT," +
                     InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DATE + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES =

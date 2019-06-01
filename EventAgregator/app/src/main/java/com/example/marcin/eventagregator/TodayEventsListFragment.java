@@ -211,6 +211,8 @@ public class TodayEventsListFragment extends Fragment
                         final ArrayList<Event> arrayListEvents = eventList.getEvents();
 
                         checkIfListHasEvents(arrayListEvents);
+                        for (Event event : arrayListEvents)
+                            Log.d("cowysz", event.toJSON());
 
 
                         eventListAdapter = new EventListAdapter(arrayListEvents, getContext());

@@ -36,8 +36,10 @@ public class DbInterestingEvents
             String nameS = cursor.getString(1);
             String descriptionS = cursor.getString(2);
             String addressS = cursor.getString(3);
-            String dateS = cursor.getString(4);
-            Event event = new Event(id, nameS, descriptionS, addressS, dateS);
+            String urlS = cursor.getString(4);
+            String dateS = cursor.getString(5);
+
+            Event event = new Event(id, nameS, descriptionS, addressS, dateS, urlS);
             eventsList.add(event);
             itemIds.add(itemId);
         }
@@ -98,6 +100,7 @@ public class DbInterestingEvents
         values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DESCRIPTION, event.getDescription());
         values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_ADDRESS, event.getAddress());
         values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_DATE, event.getDate());
+        values.put(InterestingEventsDbContract.InterestingEvent.COLUMN_NAME_URL, event.getUrl());
 
         db.insert(InterestingEventsDbContract.InterestingEvent.TABLE_NAME, null, values);
 

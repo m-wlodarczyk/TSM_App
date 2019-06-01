@@ -190,7 +190,7 @@ public class EventInfoFragment extends Fragment
             {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, event.getTitle()); // TODO set url
+                sendIntent.putExtra(Intent.EXTRA_TEXT, event.getUrl());
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
             }

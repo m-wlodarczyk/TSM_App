@@ -16,15 +16,27 @@ public class Event
     private String description;
     private String address;
     private String date;
+    private String url;
 
     public Event(){}
-    public Event(Integer id, String title, String description, String address, String date)
+    public Event(Integer id, String title, String description, String address, String date, String url)
     {
         this.id = id;
         this.title = title;
         this.description = description;
         this.address = address;
         this.date = date;
+        this.url = url;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
     }
 
     public Event(JSONObject eventJSON)
@@ -51,6 +63,7 @@ public class Event
                     .getJSONObject("event_address")
                     .getString("street");
             this.date = eventJSON.getString("event_start");
+            this.url = eventJSON.getString("event_url");
         } catch (JSONException e)
         {
             Log.d("exception", e.getMessage());

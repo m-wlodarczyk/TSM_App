@@ -19,6 +19,8 @@ public final class InterestingEventsDbContract
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_ADDRESS = "address";
         public static final String COLUMN_NAME_DATE= "date";
+        public static final String COLUMN_NAME_URL = "url";
+
 
     }
 }
