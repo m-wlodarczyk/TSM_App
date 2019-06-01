@@ -55,11 +55,35 @@ public class TodayEventsListFragment extends Fragment
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putString("key", "niekij");
+        Log.d("jjjj", "Sdfsf");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+        {
+            Log.d("jjjj", "ni jest :)");
+
+        }
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.fragment_today_events_list, container, false);
 
+        if (savedInstanceState != null)
+        {
+            Log.d("jjjj", "ni jest :)");
+
+        }
         MainActivity.enableAd(view);
 
         setDateTextView();
@@ -86,6 +110,8 @@ public class TodayEventsListFragment extends Fragment
 
         return view;
     }
+
+
 
     private void setDateTextView()
     {
@@ -202,8 +228,8 @@ public class TodayEventsListFragment extends Fragment
                                 Fragment newFragment = new EventInfoFragment();
                                 newFragment.setArguments(bundle);
                                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                transaction.replace(R.id.fragment, newFragment);
                                 transaction.addToBackStack(null);
+                                transaction.replace(R.id.fragment, newFragment);
                                 transaction.commit();
 
                             }

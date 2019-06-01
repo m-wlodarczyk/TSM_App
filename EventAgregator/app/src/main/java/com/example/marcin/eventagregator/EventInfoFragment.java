@@ -101,7 +101,11 @@ public class EventInfoFragment extends Fragment
 
                     Fragment mapFragment = new MapFragment();
                     ((MapFragment) mapFragment).setMarkers(markers, getContext());
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    FragmentTransaction transaction = null;
+                    if (getFragmentManager() != null)
+                    {
+                        transaction = getFragmentManager().beginTransaction();
+                    }
                     transaction.replace(R.id.map, mapFragment);
                     transaction.commit();
                 } else

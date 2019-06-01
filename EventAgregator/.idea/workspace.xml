@@ -6,15 +6,16 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="nocoo" />
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="difference0" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="184a9b95-1116-4275-8d98-9908c7b622f9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/EventInfoFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/EventInfoFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/NotificationJobService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/NotificationJobService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/TodayEventsListFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/TodayEventsListFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_today_events_list.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_today_events_list.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -82,8 +83,8 @@
     <session id="-687900387">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="24" />
-          <entry key="project.open.time.0" value="3" />
+          <entry key="project.closed" value="26" />
+          <entry key="project.open.time.0" value="4" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.11" value="1" />
           <entry key="project.open.time.13" value="5" />
@@ -94,16 +95,17 @@
           <entry key="project.open.time.20" value="1" />
           <entry key="project.open.time.5" value="2" />
           <entry key="project.open.time.6" value="5" />
-          <entry key="project.opened" value="26" />
+          <entry key="project.open.time.8" value="1" />
+          <entry key="project.opened" value="28" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="class" value="3" />
           <entry key="gradle" value="20" />
-          <entry key="java" value="821" />
+          <entry key="java" value="847" />
           <entry key="png" value="4" />
-          <entry key="xml" value="271" />
+          <entry key="xml" value="274" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
@@ -111,26 +113,26 @@
           <entry key="CLASS" value="3" />
           <entry key="Groovy" value="20" />
           <entry key="Image" value="4" />
-          <entry key="JAVA" value="821" />
-          <entry key="XML" value="271" />
+          <entry key="JAVA" value="847" />
+          <entry key="XML" value="274" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="3" />
           <entry key="gradle" value="52" />
-          <entry key="java" value="17397" />
-          <entry key="txt" value="738" />
-          <entry key="xml" value="3022" />
+          <entry key="java" value="18005" />
+          <entry key="txt" value="755" />
+          <entry key="xml" value="3034" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Android Room SQL" value="1" />
           <entry key="Groovy" value="52" />
-          <entry key="JAVA" value="17396" />
-          <entry key="PLAIN_TEXT" value="741" />
-          <entry key="XML" value="3022" />
+          <entry key="JAVA" value="18004" />
+          <entry key="PLAIN_TEXT" value="758" />
+          <entry key="XML" value="3034" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
@@ -148,15 +150,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/TodayEventsListFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="233" selection-start-line="233" selection-end-line="233" />
+            <state relative-caret-position="140">
+              <caret line="42" column="39" lean-forward="true" selection-start-line="42" selection-start-column="39" selection-end-line="42" selection-end-column="86" />
               <folding>
                 <element signature="method#convert#0;class#TodayEventsListFragment#0" />
-                <element signature="e#2548#2760#0" expanded="true" />
-                <element signature="e#2759#2760#0" expanded="true" />
                 <element signature="method#setDateTextView#0;class#TodayEventsListFragment#0" />
-                <element signature="e#3350#3946#0" expanded="true" />
-                <element signature="e#3945#3946#0" expanded="true" />
+                <element signature="method#calendarButtonInit#0;class#TodayEventsListFragment#0" />
+                <element signature="method#updateEvents#0;class#TodayEventsListFragment#0" />
                 <element signature="method#checkIfListHasEvents#0;class#TodayEventsListFragment#0" />
               </folding>
             </state>
@@ -204,6 +204,7 @@
       <find>progressBar.setVisibility(View.INVISIBLE);</find>
       <find>TODO</find>
       <find>Log.d</find>
+      <find>difference</find>
     </findStrings>
     <replaceStrings>
       <replace>koy</replace>
@@ -278,20 +279,20 @@
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/domain/Event.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/TodayEventsMapFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/EventInfoFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/NotificationJobService.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/EventInfoFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_today_events_list.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/TodayEventsListFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/NotificationJobService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/MainActivity.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-9" />
-    <option name="y" value="-9" />
-    <option name="width" value="1938" />
-    <option name="height" value="1048" />
+    <option name="x" value="-10" />
+    <option name="y" value="-10" />
+    <option name="width" value="1940" />
+    <option name="height" value="1050" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -299,23 +300,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="AndroidView">
-        <subPane>
-          <expand>
-            <path>
-              <item name="EventAgregator" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="e9137016:NonAndroidModuleNode" />
-            </path>
-            <path>
-              <item name="EventAgregator" type="1abcf292:AndroidViewProjectNode" />
-              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -389,13 +373,30 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="AndroidView">
+        <subPane>
+          <expand>
+            <path>
+              <item name="EventAgregator" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="e9137016:NonAndroidModuleNode" />
+            </path>
+            <path>
+              <item name="EventAgregator" type="1abcf292:AndroidViewProjectNode" />
+              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="android.project.structure.last.selected" value="app" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
-    <property name="device.picker.selection" value="8bf44b6f" />
+    <property name="device.picker.selection" value="Nexus_5X_API_28" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -660,7 +661,14 @@
       <option name="project" value="LOCAL" />
       <updated>1559321880921</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="- pull to refresh">
+      <created>1559325298370</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1559325298370</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TodoView">
@@ -677,21 +685,21 @@
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.28322148" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.28322148" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
       <window_info id="Image Layers" order="5" />
       <window_info id="Designer" order="6" />
       <window_info id="Capture Tool" order="7" />
-      <window_info anchor="bottom" id="Run" order="0" weight="0.12316716" />
-      <window_info anchor="bottom" id="Logcat" order="1" weight="0.39442816" />
+      <window_info anchor="bottom" id="Run" order="0" weight="0.62316716" />
+      <window_info anchor="bottom" id="Logcat" order="1" visible="true" weight="0.32991204" />
       <window_info anchor="bottom" id="TODO" order="2" weight="0.32991204" />
       <window_info anchor="bottom" id="Debug" order="3" />
       <window_info anchor="bottom" id="Terminal" order="4" weight="0.3240469" />
       <window_info anchor="bottom" id="Event Log" order="5" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="6" weight="0.1686217" />
-      <window_info active="true" anchor="bottom" id="Build" order="7" visible="true" weight="0.22140762" />
+      <window_info anchor="bottom" id="Build" order="7" weight="0.22140762" />
       <window_info anchor="bottom" id="Find" order="8" weight="0.06891496" />
       <window_info anchor="bottom" id="Android Profiler" order="9" weight="0.32991204" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" weight="0.5402685" />
@@ -725,7 +733,8 @@
     <MESSAGE value="- create notification GUI" />
     <MESSAGE value="- notifications settings done" />
     <MESSAGE value="- loading screens&#10;- info about no connection to internet&#10;- info about empty list of interesting events" />
-    <option name="LAST_COMMIT_MESSAGE" value="- loading screens&#10;- info about no connection to internet&#10;- info about empty list of interesting events" />
+    <MESSAGE value="- pull to refresh" />
+    <option name="LAST_COMMIT_MESSAGE" value="- pull to refresh" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_grade_gold_24dp.xml" />
@@ -747,12 +756,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/custom_marker_layout.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="233">
           <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-16.1.0.aar/8cce9f08b209d14f0bda6a5893ffdda3/jars/classes.jar!/com/google/android/gms/maps/GoogleMap.class">
       <provider selected="true" editor-type-id="text-editor">
@@ -776,7 +785,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_today_events_map.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="160">
           <caret line="20" column="36" lean-forward="true" selection-start-line="20" selection-start-column="36" selection-end-line="20" selection-end-column="36" />
@@ -785,14 +793,15 @@
           </folding>
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/app_bar_main.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="280">
           <caret line="14" column="24" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/java/util/Date.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -879,15 +888,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/array.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="3" column="11" lean-forward="true" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/array.xml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_settings.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
           <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
@@ -896,45 +898,30 @@
           </folding>
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/row_event.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="520">
           <caret line="26" column="11" lean-forward="true" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/widget/ArrayAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="202">
           <caret line="391" column="23" selection-start-line="391" selection-start-column="23" selection-end-line="391" selection-end-column="23" />
-          <folding>
-            <element signature="e#14684#14685#0" expanded="true" />
-            <element signature="e#14729#14730#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/MapFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="48" selection-start-line="48" selection-end-line="62" selection-end-column="5" />
-          <folding>
-            <element signature="method#onCreateView#0;class#MapFragment#0" />
-            <element signature="method#setMapWithUserLocation#0;class#MapFragment#0" />
-            <element signature="method#setMapWithoutUserLocation#0;class#MapFragment#0" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_settings_notifications.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="359">
           <caret line="72" column="43" selection-start-line="72" selection-start-column="43" selection-end-line="72" selection-end-column="43" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/SettingsFragment.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -957,12 +944,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/row_notification_time.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
           <caret line="64" column="61" selection-start-line="64" selection-start-column="61" selection-end-line="64" selection-end-column="61" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/NotificationTimeListAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -1000,23 +987,23 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/progress_circle.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20">
           <caret line="1" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/progress.xml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/empty_list_fragment.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
           <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/InterestingEventsListFragment.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -1029,47 +1016,25 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_interesting_events_list.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20">
           <caret line="1" selection-start-line="1" selection-end-line="6" selection-end-column="52" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_event_info.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
           <caret line="7" column="35" lean-forward="true" selection-start-line="7" selection-start-column="35" selection-end-line="7" selection-end-column="35" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/domain/EventList.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
           <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="41" column="12" selection-start-line="41" selection-start-column="12" selection-end-line="41" selection-end-column="12" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-manifest" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/domain/Event.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="38" column="21" lean-forward="true" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="21" />
-          <folding>
-            <element signature="method#Event#1;class#Event#0" />
-            <element signature="method#toString#0;class#Event#0" />
-            <element signature="method#toJSON#0;class#Event#0" />
-            <element signature="method#createFromJSON#0;class#Event#0" />
-            <element signature="method#equals#0;class#Event#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1087,48 +1052,81 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/NotificationJobService.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/EventListAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="164" column="64" selection-start-line="164" selection-start-column="64" selection-end-line="164" selection-end-column="64" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#getCurrentDateWithHour#0;class#NotificationJobService#0" />
-            <element signature="method#onStopJob#0;class#NotificationJobService#0" />
-          </folding>
+        <state relative-caret-position="187">
+          <caret line="54" column="11" lean-forward="true" selection-start-line="54" selection-start-column="11" selection-end-line="54" selection-end-column="11" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="11" selection-start-line="11" selection-end-line="13" />
+        <state relative-caret-position="300">
+          <caret line="15" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/MapFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="48" selection-start-line="48" selection-end-line="62" selection-end-column="5" />
+          <folding>
+            <element signature="method#onCreateView#0;class#MapFragment#0" />
+            <element signature="method#setMapWithUserLocation#0;class#MapFragment#0" />
+            <element signature="method#setMapWithoutUserLocation#0;class#MapFragment#0" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/EventInfoFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="188" column="77" selection-start-line="188" selection-start-column="77" selection-end-line="188" selection-end-column="77" />
+        <state relative-caret-position="133">
+          <caret line="104" column="52" selection-start-line="104" selection-start-column="52" selection-end-line="104" selection-end-column="52" />
           <folding>
             <element signature="e#1174#1183#0" />
             <element signature="method#eventTextViewsInit#0;class#EventInfoFragment#0" />
             <element signature="method#addToInterestingButtonInit#0;class#EventInfoFragment#0" />
+            <element signature="method#shareButtonInit#0;class#EventInfoFragment#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="29" column="14" lean-forward="true" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="15" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-manifest" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_today_events_list.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" column="40" selection-start-line="5" selection-start-column="40" selection-end-line="5" selection-end-column="40" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/NotificationJobService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="782">
+          <caret line="134" column="52" selection-start-line="134" selection-start-column="52" selection-end-line="134" selection-end-column="52" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#onStopJob#0;class#NotificationJobService#0" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1191">
-          <caret line="50" column="53" selection-start-line="50" selection-start-column="45" selection-end-line="50" selection-end-column="53" />
+        <state relative-caret-position="198">
+          <caret line="183" column="9" selection-start-line="183" selection-start-column="9" selection-end-line="183" selection-end-column="9" />
           <folding>
             <element signature="method#onBackPressed#0;class#MainActivity#0" />
-            <element signature="e#2563#2606#0" />
             <element signature="method#onNavigationItemSelected#0;class#MainActivity#0" />
             <element signature="method#enableAd#0;class#MainActivity#0" />
             <element signature="method#configureDrawerAndToolbar#0;class#MainActivity#0" />
-            <element signature="method#enablePushNotificationService#0;class#MainActivity#0" />
             <element signature="method#deleteOldInterestingEvents#0;class#MainActivity#0" />
             <element signature="method#checkIfNotificationPressed#0;class#MainActivity#0" />
             <element signature="method#isJobServiceOn#0;class#MainActivity#0" />
@@ -1137,32 +1135,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/EventListAdapter.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/domain/Event.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="54" column="11" lean-forward="true" selection-start-line="54" selection-start-column="11" selection-end-line="54" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_today_events_list.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+        <state relative-caret-position="173">
+          <caret line="33" column="62" selection-start-line="33" selection-start-column="54" selection-end-line="33" selection-end-column="62" />
+          <folding>
+            <element signature="method#toString#0;class#Event#0" />
+            <element signature="method#toJSON#0;class#Event#0" />
+            <element signature="method#createFromJSON#0;class#Event#0" />
+            <element signature="method#equals#0;class#Event#0" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/marcin/eventagregator/TodayEventsListFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="233" selection-start-line="233" selection-end-line="233" />
+        <state relative-caret-position="140">
+          <caret line="42" column="39" lean-forward="true" selection-start-line="42" selection-start-column="39" selection-end-line="42" selection-end-column="86" />
           <folding>
             <element signature="method#convert#0;class#TodayEventsListFragment#0" />
-            <element signature="e#2548#2760#0" expanded="true" />
-            <element signature="e#2759#2760#0" expanded="true" />
             <element signature="method#setDateTextView#0;class#TodayEventsListFragment#0" />
-            <element signature="e#3350#3946#0" expanded="true" />
-            <element signature="e#3945#3946#0" expanded="true" />
+            <element signature="method#calendarButtonInit#0;class#TodayEventsListFragment#0" />
+            <element signature="method#updateEvents#0;class#TodayEventsListFragment#0" />
             <element signature="method#checkIfListHasEvents#0;class#TodayEventsListFragment#0" />
           </folding>
         </state>
